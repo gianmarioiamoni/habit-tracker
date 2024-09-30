@@ -3,7 +3,7 @@ import { protect } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
-router.get("/habits", protect, (req, res) => {
+router.get("/", protect, (req, res) => {
   res.send("Protected route, access granted");
 });
 
