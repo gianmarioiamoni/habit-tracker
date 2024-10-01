@@ -3,12 +3,18 @@ import bcrypt from "bcryptjs";
 
 // User Interface definition
 export interface IUser extends Document {
+  name: string,
   email: string;
   password: string;
   comparePassword(enteredPassword: string): Promise<boolean>;
 }
 
 const userSchema: Schema = new Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   email: {
     type: String,
     required: true,

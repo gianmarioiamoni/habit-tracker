@@ -16,18 +16,17 @@ const generateToken = (user: IUser) => {
 // @route   POST /api/auth/signup
 // @access  Public
 export const signup = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  console.log("email: ", email, "password: ", password);
+  const { name, email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    console.log("user: ", user);
 
     if (user) {
       res.status(401).json({ message: "User already exists" });
     }
 
     const newUser = await User.create({
+      name,
       email,
       password,
     });
@@ -37,6 +36,7 @@ export const signup = async (req: Request, res: Response) => {
     if (newUser) {
       res.status(201).json({
         _id: newUser._id,
+        name: newUser.name,
         email: newUser.email,
         token: generateToken(newUser),
       });
