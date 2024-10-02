@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES6",
+    "module": "ESNext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -13,14 +14,47 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "outDir": "build",
+    "rootDir": "src",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"]                         // Permette l'importazione con alias
+    }
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "build"
   ]
 }
+// {
+//   "compilerOptions": {
+//     "target": "ES6",                      // Target di output, ES6 o superiore
+//     "module": "ESNext",                   // Modulo di output, ESNext è consigliato per React
+//     "jsx": "react-jsx",                   // Impostazione per il supporto JSX
+//     "lib": [
+//       "dom",
+//       "dom.iterable",
+//       "esnext"
+//     ],
+//     "strict": true,                        // Abilitare il controllo rigoroso
+//     "esModuleInterop": true,               // Permette l'importazione di moduli CommonJS
+//     "skipLibCheck": true,                  // Salta il controllo dei tipi nei file delle librerie
+//     "forceConsistentCasingInFileNames": true, // Consistenza nel caso dei nomi dei file
+//     "outDir": "./build",                   // Cartella di output per i file compilati
+//     "rootDir": "./src",                    // Cartella principale dei file sorgente
+//     "baseUrl": "./src",                    // Directory di base per le importazioni
+//     "paths": {
+//       "@/*": ["*"]                         // Permette l'importazione con alias
+//     }
+//   },
+//   "include": ["src"],                     // Includi i file sorgente
+//   "exclude": ["node_modules", "build"]    // Escludi cartelle non necessarie
+// }

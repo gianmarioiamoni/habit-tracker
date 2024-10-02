@@ -3,7 +3,7 @@ import api from '../services/api'; // Axios service
 
 const Dashboard: React.FC = () => {
     const { data, error, isLoading } = useQuery('userData', async () => {
-        const response = await api.get('/protected-route');
+        const response = await api.get('http://localhost:5000/habits');
         return response.data;
     });
 

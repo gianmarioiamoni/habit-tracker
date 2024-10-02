@@ -60,8 +60,9 @@
 // export default Login;
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import axios from 'axios';
+// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../../services/authServices';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -70,8 +71,9 @@ const Login: React.FC = () => {
 
     // Mutation to send login request
     const mutation = useMutation(async () => {
-        const response = await axios.post('/api/auth/login', { email, password });
-        return response.data;
+        const response = await login({ email, password });
+        // const response = await axios.post('/auth/login', { email, password });
+        return response;
     }, {
         onSuccess: (data) => {
             // save JWT to local storage
