@@ -1,7 +1,9 @@
 import { useQuery } from 'react-query';
 import api from '../services/api'; // Axios service
 
-const Dashboard: React.FC = () => {
+// const Dashboard: React.FC = () => {
+    function Dashboard(): JSX.Element {
+    
     const { data, error, isLoading } = useQuery('userData', async () => {
         const response = await api.get('http://localhost:5000/habits');
         return response.data;

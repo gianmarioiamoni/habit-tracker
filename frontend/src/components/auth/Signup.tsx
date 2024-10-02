@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { signup } from '../../services/authServices';
 
-const Signup: React.FC = () => {
+function Signup(): JSX.Element {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

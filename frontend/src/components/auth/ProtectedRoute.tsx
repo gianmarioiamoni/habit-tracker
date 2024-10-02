@@ -5,7 +5,7 @@ interface ProtectedRouteProps {
     children: React.ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+function ProtectedRoute({ children }: ProtectedRouteProps): JSX.Element {
     const token = localStorage.getItem('token');
 
     // If there's no token, redirect to the login page
