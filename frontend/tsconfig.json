@@ -23,7 +23,8 @@
     "rootDir": "src",
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["./*"]                         // Permette l'importazione con alias
+      "@/*": ["./*"]  
+      // "@/*": ["./src/*"]
     }
   },
   "include": [

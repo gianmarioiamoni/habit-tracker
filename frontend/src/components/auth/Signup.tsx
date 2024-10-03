@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { signup } from '../../services/authServices';
-
-import { useAuth } from '../../contexts/AuthContext'; 
+import { useAuth } from '../../contexts/AuthContext';
+import { useMessage } from '../../contexts/MessageContext'; 
 
 function Signup(): JSX.Element {
     const [name, setName] = useState('');
@@ -12,20 +11,23 @@ function Signup(): JSX.Element {
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
-    const { login: loginContext } = useAuth(); // get login function from AuthContext
+    const { signup: signupContext } = useAuth(); // get login function from AuthContext
+    const { setErrorMessage, setSuccessMessage } = useMessage();
 
-    const { mutate, isLoading, error } = useMutation(signup, {
+    const { mutate, isLoading, error } = useMutation(signupContext, {
         onSuccess: (data) => {
-            alert('User signed up successfully!');
-            localStorage.setItem('token', data.token);
-            loginContext();
+            setSuccessMessage("User signed up successfully!");
             navigate('/dashboard');
         },
         onError: (error: any) => {
             console.error(error);
-            alert("An error occurred during signup");
+            setErrorMessage("An error occurred during signup");
         }
     });
+
+    if (error instanceof Error) {
+        setErrorMessage("An error occurred during signup");
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -63,12 +65,6 @@ function Signup(): JSX.Element {
                         placeholder="Password"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
-
-                    {error instanceof Error &&
-                        <p className="text-red-500">
-                            An error occurred: {error.message}
-                        </p>
-                    }
 
                     <button
                         type="submit"

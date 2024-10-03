@@ -2,37 +2,35 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { login } from '../../services/authServices';
-
 import { useAuth } from '../../contexts/AuthContext';
+import { useMessage } from '../../contexts/MessageContext';
 
 function Login(): JSX.Element {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
     const navigate = useNavigate();
     const { login: loginContext } = useAuth();
 
+    const { setSuccessMessage, setErrorMessage } = useMessage();
+
     // Mutation to send login request
     const mutation = useMutation(async () => {
-        const response = await login({ email, password });
+        const response = await loginContext({ email, password });
         return response;
     }, {
         onSuccess: (data) => {
             // save JWT to local storage
-            localStorage.setItem('token', data.token);
-            // Update the auth context login state
-            loginContext();
-            // navigate to a protected route after login
             navigate('/dashboard');
+            setSuccessMessage("Welcome to Habit Tracker!");
         },
         onError: (error: any) => {
             console.error(error);
-            alert("An error occurred during login");
+            setErrorMessage("Invalid email or password");
         }
     });
 
     const handleSubmit = (e: React.FormEvent) => {
-        console.log("email: ", email, "password: ", password);
         e.preventDefault();
         mutation.mutate();
     };

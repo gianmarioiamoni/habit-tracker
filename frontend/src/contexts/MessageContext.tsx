@@ -2,14 +2,15 @@ import React, { createContext, useContext, useState } from 'react';
 
 // Context definition
 export interface MessageType {
-    // messagetype is an Enum with values ERROR, INFO, SUCCESS, WARNING
-    // define an Enum with values ERROR, INFO, SUCCESS, WARNING
     messageType: 'ERROR' | 'INFO' | 'SUCCESS' | 'WARNING';
     message: string;
 }
 interface MessageContextType {
     message: MessageType;
     setSuccessMessage: (msg: string) => void;
+    setErrorMessage: (msg: string) => void;
+    setWarningMessage: (msg: string) => void;
+    setInfoMessage: (msg: string) => void;
     showToast: boolean;
 }
 
@@ -33,8 +34,42 @@ export function MessageProvider({ children }: { children: React.ReactNode }): JS
         }, 3000);
     };
 
+    const setErrorMessage = (msg: string) => {
+        setShowToast(true);
+        setMessage({ messageType: 'ERROR', message: msg });
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+            setShowToast(false);
+        }, 3000);
+    };
+
+    const setWarningMessage = (msg: string) => {
+        setShowToast(true);
+        setMessage({ messageType: 'WARNING', message: msg });
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+            setShowToast(false);
+        }, 3000);
+    };
+
+    const setInfoMessage = (msg: string) => {
+        setShowToast(true);
+        setMessage({ messageType: 'INFO', message: msg });
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+            setShowToast(false);
+        }, 3000);
+    };
+
+
     return (
-        <MessageContext.Provider value={{ message, setSuccessMessage, showToast }}>
+        <MessageContext.Provider value={{
+            message,
+            setErrorMessage,
+            setWarningMessage,
+            setInfoMessage,
+            setSuccessMessage, showToast
+        }}>
             {children}
         </MessageContext.Provider>
     );
