@@ -3,15 +3,18 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
+import { useMessage } from '../contexts/MessageContext';
 
-interface NavbarProps {
-    setShowToast: (showToast: boolean) => void;
-}
+// interface NavbarProps {
+//     setShowToast: (showToast: boolean) => void;
+// }
 // const Navbar: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
-function Navbar({ setShowToast }: NavbarProps): JSX.Element {
+// function Navbar({ setShowToast }: NavbarProps): JSX.Element {
+function Navbar(): JSX.Element {
     const { isLoggedIn } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { logout: logoutContext } = useAuth();
+    const { setSuccessMessage } = useMessage();
 
     const navigate = useNavigate();
     // const [showToast, setShowToast] = useState(false);
@@ -24,9 +27,10 @@ function Navbar({ setShowToast }: NavbarProps): JSX.Element {
         logoutContext();
         navigate('/login');  
         // Show success toast message
-        setShowToast(true);
-        // Remove toast after 3 seconds
-        setTimeout(() => setShowToast(false), 3000); 
+        // setShowToast(true);
+        // // Remove toast after 3 seconds
+        // setTimeout(() => setShowToast(false), 3000); 
+        setSuccessMessage("Logout successful!");
     };
 
     return (
