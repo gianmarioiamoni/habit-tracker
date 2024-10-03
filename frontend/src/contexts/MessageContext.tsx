@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 
 // Context definition
-interface MessageType {
+export interface MessageType {
     // messagetype is an Enum with values ERROR, INFO, SUCCESS, WARNING
     // define an Enum with values ERROR, INFO, SUCCESS, WARNING
     messageType: 'ERROR' | 'INFO' | 'SUCCESS' | 'WARNING';
@@ -12,11 +12,6 @@ interface MessageContextType {
     setSuccessMessage: (msg: string) => void;
     showToast: boolean;
 }
-// interface MessageContextType {
-//     isLoggedIn: boolean;
-//     login: () => void;
-//     logout: () => void;
-// }
 
 // Context creation 
 const MessageContext = createContext<MessageContextType | undefined>(undefined);

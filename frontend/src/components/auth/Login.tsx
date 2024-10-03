@@ -32,6 +32,7 @@ function Login(): JSX.Element {
     });
 
     const handleSubmit = (e: React.FormEvent) => {
+        console.log("email: ", email, "password: ", password);
         e.preventDefault();
         mutation.mutate();
     };

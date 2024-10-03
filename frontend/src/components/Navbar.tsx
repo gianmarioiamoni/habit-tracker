@@ -17,7 +17,6 @@ function Navbar(): JSX.Element {
     const { setSuccessMessage } = useMessage();
 
     const navigate = useNavigate();
-    // const [showToast, setShowToast] = useState(false);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -26,11 +25,7 @@ function Navbar(): JSX.Element {
     const handleLogout = () => {
         logoutContext();
         navigate('/login');  
-        // Show success toast message
-        // setShowToast(true);
-        // // Remove toast after 3 seconds
-        // setTimeout(() => setShowToast(false), 3000); 
-        setSuccessMessage("Logout successful!");
+        setSuccessMessage("Logout successful!!!");
     };
 
     return (
