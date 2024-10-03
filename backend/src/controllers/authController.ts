@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import User, { IUser } from "../models/Users";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -17,7 +17,6 @@ const generateToken = (user: IUser) => {
 // @access  Public
 export const signup = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
-
   try {
     const user = await User.findOne({ email });
 
@@ -31,8 +30,6 @@ export const signup = async (req: Request, res: Response) => {
       password,
     });
 
-    console.log("newUser: ", newUser);
-    
     if (newUser) {
       res.status(201).json({
         _id: newUser._id,

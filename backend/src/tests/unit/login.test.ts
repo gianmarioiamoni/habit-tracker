@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from '../../src/app';
+import app from "../../app";
 import mongoose from "mongoose";
 import http from "http";
 import { describe, it } from "node:test";
@@ -8,7 +8,7 @@ import { expect } from "@jest/globals";
 let server: http.Server;
 
 async function connectToDB() {
-  const MONGO_URL = "mongodb://localhost:27017/habit-tracker-test"; // use test db 
+  const MONGO_URL = "mongodb://localhost:27017/habit-tracker-test"; // use test db
   try {
     await mongoose.connect(MONGO_URL);
     console.log("Database connected: ", MONGO_URL);
@@ -42,29 +42,24 @@ afterAll((done) => {
   // await mongoose.connection.close();
 });
 
-describe("Authentication API", () => {
-  it("should create a new user and return a token", async () => {
-    const res = await request(app).post("/api/auth/signup").send({
-      email: "testuser@example.com",
+describe("POST /api/auth/login", () => {
+  it("should login an existing user and return a token", async () => {
+    const response = await request(app).post("/api/auth/login").send({
+      email: "existinguser@example.com",
       password: "password123",
     });
 
-    expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty("token");
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
   });
 
-  it("should return an error if the email is already taken", async () => {
-    const res = await request(app).post("/api/auth/signup").send({
-      email: "testuser@example.com",
-      password: "password123",
+  it("should return a 400 error if the email or password is incorrect", async () => {
+    const response = await request(app).post("/api/auth/login").send({
+      email: "wrongemail@example.com",
+      password: "wrongpassword",
     });
 
-    expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("error");
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("message", "Invalid credentials");
   });
 });
-
-
-
-
-

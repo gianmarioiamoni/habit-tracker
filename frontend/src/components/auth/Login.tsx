@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+
 import { login } from '../../services/authServices';
+
+import { useAuth } from '../../contexts/AuthContext';
 
 function Login(): JSX.Element {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const { login: loginContext } = useAuth();
 
     // Mutation to send login request
     const mutation = useMutation(async () => {
@@ -16,6 +20,8 @@ function Login(): JSX.Element {
         onSuccess: (data) => {
             // save JWT to local storage
             localStorage.setItem('token', data.token);
+            // Update the auth context login state
+            loginContext();
             // navigate to a protected route after login
             navigate('/dashboard');
         },
