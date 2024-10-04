@@ -6,7 +6,7 @@ import Login from './components/auth/Login';
 import HabitList from './components/habits/HabitList'; 
 import ProtectedRoute from '../src/components/auth/ProtectedRoute';
 import Navbar from './components/Navbar';
-import MessageToast from './components/utils/MessageToast';
+import MessageToast from './components/ui/MessageToast';
 
 import { useMessage } from "./contexts/MessageContext"
 
