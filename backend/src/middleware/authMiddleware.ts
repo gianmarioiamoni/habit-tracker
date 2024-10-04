@@ -6,11 +6,7 @@ interface JwtPayload {
   id: string;
 }
 
-export const protect = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const protect = async (req: Request, res: Response, next: NextFunction) => {
   let token;
 
   if (

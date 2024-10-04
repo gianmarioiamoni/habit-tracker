@@ -29,7 +29,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
         // Perform login logic
         try {
             const data = await loginService(userData);
-            console.log("Login data:", data);
             setUser({ name: data.name, email: data.email, id: data._id });
             localStorage.setItem('token', data.token);
             setIsLoggedIn(true);
@@ -59,6 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     const logout = () => {
         setIsLoggedIn(false);
         localStorage.removeItem('token');
+        setUser({ id: 0, name: '', email: '' });
     };
 
     return (

@@ -1,11 +1,12 @@
 import express from "express";
-import { signup, login } from "../controllers/authController";
+
+import { login, signup } from "../controllers/authController";
 
 const router = express.Router();
 
 /**
  * @swagger
- * /signup:
+ * /auth/signup:
  *   post:
  *     summary: User registration
  *     tags: [Authentication]
@@ -32,7 +33,7 @@ router.post("/signup", signup);
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: User login
  *     tags: [Authentication]
@@ -54,10 +55,5 @@ router.post("/signup", signup);
  *         description: Unauthorized
  */
 router.post("/login", login);
-
-function fake() {
-  return true;
-}
-
 
 export default router;
