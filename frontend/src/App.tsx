@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Signup from './components/auth/Signup';
 import Login from './components/auth/Login';
-import Dashboard from './components/Dashboard'; 
+import HabitList from './components/habits/HabitList'; 
 import ProtectedRoute from '../src/components/auth/ProtectedRoute';
 import Navbar from './components/Navbar';
 import MessageToast from './components/utils/MessageToast';
@@ -34,7 +34,7 @@ function App(): JSX.Element {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <HabitList />
             </ProtectedRoute>
           }
         />

@@ -14,9 +14,6 @@ function Login(): JSX.Element {
 
     const { setSuccessMessage, setErrorMessage } = useMessage();
 
-    const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:5000/auth/google'; // Cambia con l'URL del tuo backend
-    };
 
     // Mutation to send login request
     const mutation = useMutation(async () => {
