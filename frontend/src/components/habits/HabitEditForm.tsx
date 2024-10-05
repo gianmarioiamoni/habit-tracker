@@ -1,24 +1,23 @@
-
+import React from "react";
+import { Habit } from "../../interfaces/Habit";
 interface HabitEditFormProps {
-    newHabit: {
-        title: string;
-        description: string;
-        frequency: string;
-    };
-    setNewHabit: React.Dispatch<React.SetStateAction<{
-        title: string;
-        description: string;
-        frequency: string;
-    }>>;
+    newHabit: Habit;
+    setNewHabit: React.Dispatch<React.SetStateAction<Habit>>;
     handleAddHabit: (e: React.FormEvent) => void;
     onClose: () => void;
 };
 
-export default function HabitEditForm({newHabit, setNewHabit, handleAddHabit, onClose }: HabitEditFormProps): JSX.Element {
+export default function HabitEditForm(
+    { newHabit, setNewHabit, handleAddHabit, onClose }: HabitEditFormProps
+): JSX.Element {
 
     const handleNewHabitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewHabit({ ...newHabit, [e.target.name]: e.target.value });
     };
+
+    const handleFrequencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setNewHabit({ ...newHabit, frequency: e.target.value });
+    }
 
 
     return (
@@ -48,7 +47,7 @@ export default function HabitEditForm({newHabit, setNewHabit, handleAddHabit, on
                             required
                         />
                     </div>
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                         <label className="block text-gray-700">Frequency</label>
                         <input
                             type="text"
@@ -58,6 +57,24 @@ export default function HabitEditForm({newHabit, setNewHabit, handleAddHabit, on
                             className="w-full p-2 border border-gray-300 rounded mt-1"
                             required
                         />
+                    </div> */}
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Frequency</label>
+                        <select
+                            name="frequency"
+                            value={newHabit.frequency}
+                            onChange={handleFrequencyChange}
+                            className="w-full p-2 border border-gray-300 rounded mt-1"
+                            required
+                        >
+                            <option value="">Select Frequency</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                            <option value="working-days">Working days</option>
+                            <option value="weekend">Weekend</option>
+                        </select>
                     </div>
                     <div className="flex justify-end space-x-2">
                         <button

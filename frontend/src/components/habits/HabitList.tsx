@@ -7,19 +7,13 @@ import HabitEditForm from "./HabitEditForm";
 import HabitListItem from "./HabitListItem";
 import { Habit } from "../../interfaces/Habit";
 
-// interface Habit {
-//     _id: string;
-//     title: string;
-//     description: string;
-//     frequency: string;
-// }
 
 function HabitList(): JSX.Element {
     const { setErrorMessage, setInfoMessage } = useMessage();
     const { user } = useAuth();
     const queryClient = useQueryClient();
 
-    const [newHabit, setNewHabit] = useState({ title: "", description: "", frequency: "" });
+    const [newHabit, setNewHabit] = useState({ _id: "", title: "", description: "", frequency: "" });
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Fetch data using useQuery
