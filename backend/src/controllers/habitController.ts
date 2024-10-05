@@ -9,24 +9,14 @@ export const createHabit = async (req: Request, res: Response) => {
       const userId = req.user?._id;
       // Assuming user is attached to request by the authMiddleware
       console.log("createHabit() - userId:", userId);
-    // const newHabit = new Habit({
-    //   title,
-    //   description,
-    //   frequency,
-    //   startDate,
-    //   userId,
-    // });
-      
-    let newHabit = new Habit({
+    const newHabit = new Habit({
       title,
       description,
       frequency,
+      startDate,
       userId,
     });
       
-      
-    console.log("createHabit() - newHabit:", newHabit);
-
     const savedHabit = await newHabit.save();
     res.status(201).json(savedHabit);
   } catch (error) {

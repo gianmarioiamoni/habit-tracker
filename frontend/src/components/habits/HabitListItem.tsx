@@ -1,15 +1,13 @@
 import { Habit } from "../../interfaces/Habit";
+import { format } from "date-fns";
 
 interface HabitListItemProps {
     habit: Habit;
 }
 
-/**
- * A single item in the list of habits.
- *
- * @returns A JSX element representing a single habit item.
- */
 export default function HabitListItem({ habit }: HabitListItemProps): JSX.Element {
+    console.log("habit", habit);
+
     return (
         <li
             key={habit._id}
@@ -19,8 +17,18 @@ export default function HabitListItem({ habit }: HabitListItemProps): JSX.Elemen
                 <h3 className="text-lg font-semibold text-gray-900">{habit.title}</h3>
                 <p className="text-gray-600">{habit.description}</p>
                 <sub className="text-gray-500">Frequency: {habit.frequency}</sub>
+                {habit.startDate && (
+                    <>
+                        <br />
+                        <sub className="text-gray-600 font-semibold">
+                            Start Date: {format(new Date(habit.startDate), "dd-MM-yyyy")}
+                        </sub>
+                    </>
+                )}
             </div>
+            {/* Icons section */}
             <div className="flex space-x-4">
+                {/* Edit Icon */}
                 <button
                     className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     aria-label="Edit Habit"
@@ -59,7 +67,8 @@ export default function HabitListItem({ habit }: HabitListItemProps): JSX.Elemen
                         />
                     </svg>
                 </button>
+                    
             </div>
         </li>
-    )
+    );
 }

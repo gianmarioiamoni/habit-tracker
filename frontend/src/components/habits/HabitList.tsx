@@ -13,7 +13,7 @@ function HabitList(): JSX.Element {
     const { user } = useAuth();
     const queryClient = useQueryClient();
 
-    const [newHabit, setNewHabit] = useState({ _id: "", title: "", description: "", frequency: "" });
+    const [newHabit, setNewHabit] = useState({ _id: "", title: "", description: "", frequency: "", startDate: new Date() });
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Fetch data using useQuery
