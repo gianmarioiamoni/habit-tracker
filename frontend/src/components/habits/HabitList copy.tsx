@@ -49,18 +49,18 @@ function HabitList(): JSX.Element {
     }
 
     return (
-        <div className="container mx-auto px-24 py-4">
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-6 text-center sm:text-left">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Your Habits</h2>
+        <div className="container mx-auto p-4">
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Your Habits</h2>
                 <button
                     className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => setIsModalOpen(true)} // Open the modal when clicking "New Habit"
                 >
                     + New Habit
                 </button>
             </div>
-            <h3 className="text-center mb-8 sm:text-left">Welcome, {user?.name}</h3>
-
+            <h3>Welcome, {user?.name}</h3>
+            {/* Add New habit section */}
             {isModalOpen && (
                 <HabitEditForm
                     newHabit={newHabit}
@@ -70,7 +70,7 @@ function HabitList(): JSX.Element {
                 />
             )}
 
-            {/* Habit list section */}
+            {/* Habit list section  */}
             <div className="overflow-y-auto max-h-[70vh]">
                 {habits?.length ? (
                     <ul className="space-y-4">
