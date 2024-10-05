@@ -88,43 +88,18 @@ export default function HabitEditForm(
                     {/* Buttons */}
                     <div className="flex justify-end space-x-2">
                         <button
-                    className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    aria-label="Edit Habit"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12l-9.293 9.293a1 1 0 00-.293.707V21a1 1 0 001 1h.293a1 1 0 00.707-.293L12 15m3 0l6.293-6.293a1 1 0 00.293-.707V8a1 1 0 00-1-1h-.293a1 1 0 00-.707.293L12 15m0 0l6.293-6.293m-9 9.293L9 21"
-                        />
-                    </svg>
-                </button>
-                <button
-                    className="text-red-500 hover:text-red-600 transition duration-300"
-                    aria-label="Delete Habit"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                        />
-                    </svg>
-                </button>
+                            type="button"
+                            className="bg-gray-300 py-2 px-4 rounded-md hover:bg-gray-400"
+                            onClick={() => onClose()}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700"
+                        >
+                            Add Habit
+                        </button>
                     </div>
                 </form>
             </div>
