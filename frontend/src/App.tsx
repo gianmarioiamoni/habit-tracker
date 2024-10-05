@@ -7,6 +7,7 @@ import HabitList from './components/habits/HabitList';
 import ProtectedRoute from '../src/components/auth/ProtectedRoute';
 import Navbar from './components/Navbar';
 import MessageToast from './components/ui/MessageToast';
+import Footer from './components/ui/Footer';
 
 import { useMessage } from "./contexts/MessageContext"
 
@@ -18,29 +19,37 @@ function App(): JSX.Element {
 
 
   return (
-    <Router>
-      {/* Navbar */}
-      <Navbar />
+    <>
+      <div className="flex flex-col min-h-screen"> {/* Layout flexbox */}
+        <Router>
+          {/* Navbar */}
+          <Navbar />
+          <div className="flex-grow">
+            {/* Message Area */}
+            <MessageToast message={message} showToast={showToast} />
 
-      {/* Message Area */}
-      <MessageToast message={message} showToast={showToast} />
+            {/* Routes */}
+            <Routes>
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              {/* Protected routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <HabitList />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </div>
+        </Router>
+      
+      <Footer />
 
-      {/* Routes */}
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        {/* Protected routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <HabitList />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
-  );
+    </div >
+    </>
+  )
 };
 
 export default App;

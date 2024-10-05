@@ -71,15 +71,17 @@ function HabitList(): JSX.Element {
             )}
 
             {/* Habit list section  */}
-            {habits?.length ? (
-                <ul className="space-y-4">
-                    {habits.map((habit) => (
-                        <HabitListItem key={habit._id} habit={habit} />
-                    ))}
-                </ul>
-            ) : (
-                <p className="text-center text-gray-500">No habits found</p>
-            )}
+            <div className="overflow-y-auto max-h-[70vh]">
+                {habits?.length ? (
+                    <ul className="space-y-4">
+                        {habits.map((habit) => (
+                            <HabitListItem key={habit._id} habit={habit} />
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-center text-gray-500">No habits found</p>
+                )}
+            </div>
         </div>
     );
 }
