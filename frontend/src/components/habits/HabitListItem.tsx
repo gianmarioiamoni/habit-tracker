@@ -2,15 +2,20 @@ import React, { useState } from "react";
 import { Habit } from "../../interfaces/Habit";
 import { format } from "date-fns";
 
+import ConfirmationDialog from "../ui/ConfirmationDialog";
+
 interface HabitListItemProps {
     habit: Habit;
     onSaveEdit: (editedHabit: Habit) => void;
+    onDeleteHabit: (habitId: string) => void;
 }
 
-export default function HabitListItem({ habit, onSaveEdit }: HabitListItemProps): JSX.Element {
+export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: HabitListItemProps): JSX.Element {
     const [isEditing, setIsEditing] = useState(false);
     const [editedHabit, setEditedHabit] = useState<Habit>(habit);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    // EDIT
     // Handler for changes during editing
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -34,6 +39,21 @@ export default function HabitListItem({ habit, onSaveEdit }: HabitListItemProps)
         setEditedHabit(habit);
         setIsEditing(false);
     };
+
+    // DELETE
+    const handleDelete = () => {
+        setIsDialogOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        onDeleteHabit(habit._id);  // Call parent function to delete the habit
+        setIsDialogOpen(false);    // Close dialog
+    };
+
+    const handleCancelDelete = () => {
+        setIsDialogOpen(false);    // Close dialog
+    };
+
 
     return (
         <li className="bg-white shadow-md rounded-lg p-4 sm:flex sm:justify-between sm:items-center space-y-4 sm:space-y-0">
@@ -112,6 +132,7 @@ export default function HabitListItem({ habit, onSaveEdit }: HabitListItemProps)
                     </>
                 ) : (
                     <>
+                        {/* Edit Habit Button */}
                         <button
                             onClick={() => setIsEditing(true)}
                             className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -132,9 +153,11 @@ export default function HabitListItem({ habit, onSaveEdit }: HabitListItemProps)
                                 />
                             </svg>
                         </button>
+                        {/* Delete Habit Button */}
                         <button
                             className="text-red-500 hover:text-red-600 transition duration-300"
                             aria-label="Delete Habit"
+                            onClick={handleDelete}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -154,6 +177,14 @@ export default function HabitListItem({ habit, onSaveEdit }: HabitListItemProps)
                     </>
                 )}
             </div>
+
+            {/* Confirmation Dialog */}
+            <ConfirmationDialog
+                isOpen={isDialogOpen}
+                message={`Are you sure you want to delete the habit "${habit.title}"?`}
+                onConfirm={handleConfirmDelete}
+                onCancel={handleCancelDelete}
+            />
         </li>
     );
 }

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useMessage } from "../../contexts/MessageContext";
 import { useAuth } from "../../contexts/AuthContext";
-import { getHabits, createHabit, updateHabit } from "../../services/habitServices";
+import { getHabits, createHabit, updateHabit, deleteHabit } from "../../services/habitServices";
 import HabitEditForm from "./HabitEditForm";
 import HabitListItem from "./HabitListItem";
 import { Habit } from "../../interfaces/Habit";
@@ -39,7 +39,7 @@ function HabitList(): JSX.Element {
 
     const handleAddHabit = (e: React.FormEvent) => {
         e.preventDefault();
-        addHabitMutation.mutate(newHabit); // Send new habit to the backend
+        addHabitMutation.mutate(newHabit); 
     };
 
     // EDIT HABIT
@@ -55,8 +55,24 @@ function HabitList(): JSX.Element {
 
     // Function to handle editing save of an habit
     const handleSaveEdit = (updatedHabit: Habit) => {
-        updateHabitMutation.mutate(updatedHabit);  // Invoca la mutation per aggiornare la habit
+        updateHabitMutation.mutate(updatedHabit); 
     };
+
+    // DELETE HABIT
+    const deleteMutation = useMutation(deleteHabit, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("habits");
+            setSuccessMessage("Habit deleted successfully!");
+        },
+        onError: (err: any) => {
+            setErrorMessage(err.message);
+        },
+    });
+
+    const handleDeleteHabit = (habitId: string) => {
+        deleteMutation.mutate(habitId);
+    };
+
 
     if (isLoading) {
         setInfoMessage("Loading habits...");
@@ -93,7 +109,11 @@ function HabitList(): JSX.Element {
                 {habits?.length ? (
                     <ul className="space-y-4">
                         {habits.map((habit) => (
-                            <HabitListItem key={habit._id} habit={habit} onSaveEdit={handleSaveEdit}/>
+                            <HabitListItem key={habit._id}
+                                habit={habit}
+                                onSaveEdit={handleSaveEdit}
+                                onDeleteHabit={handleDeleteHabit}
+                            />
                         ))}
                     </ul>
                 ) : (
