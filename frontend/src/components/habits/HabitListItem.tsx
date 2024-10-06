@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Habit } from "../../interfaces/Habit";
 import { format } from "date-fns";
 
+import { Habit } from "../../interfaces/Habit";
 import ConfirmationDialog from "../ui/ConfirmationDialog";
+
+import { useEditHabit } from "../../hooks/useEditHabit";
+import { useDeleteHabit } from "../../hooks/useDeleteHabit";
 
 import { frequencyOptions } from "../../utils/frequencyOptions"; 
 
@@ -13,48 +16,26 @@ interface HabitListItemProps {
 }
 
 export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: HabitListItemProps): JSX.Element {
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedHabit, setEditedHabit] = useState<Habit>(habit);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     // EDIT
-    // Handler for changes during editing
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setEditedHabit({ ...editedHabit, [name]: value });
-    };
+    const {
+        isEditing,
+        editedHabit,
+        handleInputChange,
+        handleDateChange,
+        handleSave,
+        handleCancel,
+        setIsEditing,
+    } = useEditHabit(habit, onSaveEdit);
 
-    // Handler for changes in start date
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEditedHabit({ ...editedHabit, startDate: new Date(e.target.value) });
-    };
-
-    // Save changes handler
-    const handleSave = () => {
-        onSaveEdit(editedHabit);
-        setIsEditing(false);
-        
-    };
-
-    // Cancel changes handler
-    const handleCancel = () => {
-        setEditedHabit(habit);
-        setIsEditing(false);
-    };
 
     // DELETE
-    const handleDelete = () => {
-        setIsDialogOpen(true);
-    };
-
-    const handleConfirmDelete = () => {
-        onDeleteHabit(habit._id);  // Call parent function to delete the habit
-        setIsDialogOpen(false);    // Close dialog
-    };
-
-    const handleCancelDelete = () => {
-        setIsDialogOpen(false);    // Close dialog
-    };
+    const {
+        isDialogOpen,
+        handleDelete,
+        handleConfirmDelete,
+        handleCancelDelete,
+    } = useDeleteHabit(habit, onDeleteHabit);
 
 
     return (
