@@ -4,15 +4,15 @@ import { Habit } from "../../interfaces/Habit";
 
 import { frequencyOptions } from "../../utils/frequencyOptions";
 
-interface HabitEditFormProps {
+interface HabitAddFormProps {
     newHabit: Habit;
     setNewHabit: React.Dispatch<React.SetStateAction<Habit>>;
     handleAddHabit: (e: React.FormEvent) => void;
     onClose: () => void;
 };
 
-export default function HabitEditForm(
-    { newHabit, setNewHabit, handleAddHabit, onClose }: HabitEditFormProps
+export default function HabitAddForm(
+    { newHabit, setNewHabit, handleAddHabit, onClose }: HabitAddFormProps
 ): JSX.Element {
 
     const handleNewHabitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,21 +60,6 @@ export default function HabitEditForm(
                     {/* Frequency */}
                     <div className="mb-4">
                         <label className="block text-gray-700">Frequency</label>
-                        {/* <select
-                            name="frequency"
-                            value={newHabit.frequency}
-                            onChange={handleFrequencyChange}
-                            className="w-full p-2 border border-gray-300 rounded mt-1"
-                            required
-                        >
-                            <option value="">Select Frequency</option>
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                            <option value="working-days">Working days</option>
-                            <option value="weekend">Weekend</option>
-                        </select> */}
                         <select
                             name="frequency"
                             value={newHabit.frequency}

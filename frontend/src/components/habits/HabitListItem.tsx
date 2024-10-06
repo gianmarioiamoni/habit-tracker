@@ -57,19 +57,6 @@ export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: Habi
                             onChange={handleInputChange}
                             className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                         />
-                        {/* <select
-                            name="frequency"
-                            value={editedHabit.frequency}
-                            onChange={handleInputChange}
-                            className="border border-gray-300 rounded-md p-2 mb-2 w-full"
-                        >
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                            <option value="working days">Working Days</option>
-                            <option value="weekend">Weekend</option>
-                        </select> */}
                         <select
                             name="frequency"
                             value={editedHabit.frequency}

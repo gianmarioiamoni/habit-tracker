@@ -11,7 +11,7 @@ function Signup(): JSX.Element {
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
-    const { signup: signupContext } = useAuth(); // get login function from AuthContext
+    const { signup: signupContext } = useAuth(); 
     const { setErrorMessage, setSuccessMessage } = useMessage();
 
     const { mutate, isLoading, error } = useMutation(signupContext, {

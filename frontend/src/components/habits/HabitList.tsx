@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useMessage } from "../../contexts/MessageContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { getHabits, createHabit, updateHabit, deleteHabit } from "../../services/habitServices";
-import HabitEditForm from "./HabitEditForm";
+import HabitAddForm from "./HabitAddForm";
 import HabitListItem from "./HabitListItem";
 import { Habit } from "../../interfaces/Habit";
 
@@ -95,7 +95,7 @@ function HabitList(): JSX.Element {
             <h3 className="text-center mb-8 sm:text-left">Welcome, {user?.name}</h3>
 
             {isModalOpen && (
-                <HabitEditForm
+                <HabitAddForm
                     newHabit={newHabit}
                     setNewHabit={setNewHabit}
                     handleAddHabit={handleAddHabit}
