@@ -23,8 +23,8 @@ export function useDeleteHabit(
 
   return {
     isDialogOpen,
-      handleDelete,
-      handleConfirmDelete,
-      handleCancelDelete
-  }
+    handleDelete,
+    handleConfirmDelete,
+    handleCancelDelete,
+  };
 };
