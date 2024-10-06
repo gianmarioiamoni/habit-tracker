@@ -4,6 +4,8 @@ import { format } from "date-fns";
 
 import ConfirmationDialog from "../ui/ConfirmationDialog";
 
+import { frequencyOptions } from "../../utils/frequencyOptions"; 
+
 interface HabitListItemProps {
     habit: Habit;
     onSaveEdit: (editedHabit: Habit) => void;
@@ -74,7 +76,7 @@ export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: Habi
                             onChange={handleInputChange}
                             className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                         />
-                        <select
+                        {/* <select
                             name="frequency"
                             value={editedHabit.frequency}
                             onChange={handleInputChange}
@@ -86,6 +88,18 @@ export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: Habi
                             <option value="yearly">Yearly</option>
                             <option value="working days">Working Days</option>
                             <option value="weekend">Weekend</option>
+                        </select> */}
+                        <select
+                            name="frequency"
+                            value={editedHabit.frequency}
+                            onChange={handleInputChange}
+                            className="border border-gray-300 rounded-md p-2 mb-2 w-full"
+                        >
+                            {frequencyOptions.map(option => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
                         </select>
                         {editedHabit.startDate && (
                             <input

@@ -23,7 +23,6 @@ function HabitList(): JSX.Element {
     );
 
     // ADD NEW HABIT
-
     // useQuery to refetch habits after a new one is added
     const addHabitMutation = useMutation(createHabit, {
         onSuccess: () => {
