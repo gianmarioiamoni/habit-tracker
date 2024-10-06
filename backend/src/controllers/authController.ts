@@ -54,8 +54,6 @@ export const login = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({ email });
 
-    console.log("user from login controller: ", user);
-
     if (user && (await user.comparePassword(password))) {
       res.json({
         _id: user._id,

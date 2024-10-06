@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useMessage } from "../../contexts/MessageContext";
 import { useAuth } from "../../contexts/AuthContext";
-import { getHabits, createHabit } from "../../services/habitServices";
+import { getHabits, createHabit, updateHabit } from "../../services/habitServices";
 import HabitEditForm from "./HabitEditForm";
 import HabitListItem from "./HabitListItem";
 import { Habit } from "../../interfaces/Habit";
 
 
 function HabitList(): JSX.Element {
-    const { setErrorMessage, setInfoMessage } = useMessage();
+    const { setSuccessMessage, setErrorMessage, setInfoMessage } = useMessage();
     const { user } = useAuth();
     const queryClient = useQueryClient();
 
@@ -22,11 +22,14 @@ function HabitList(): JSX.Element {
         getHabits
     );
 
-    const mutation = useMutation(createHabit, {
+    // ADD NEW HABIT
+
+    // useQuery to refetch habits after a new one is added
+    const addHabitMutation = useMutation(createHabit, {
         onSuccess: () => {
             // Refetch the habits after a new one is added
             queryClient.invalidateQueries("habits"); 
-            setInfoMessage("Habit added successfully!");
+            setSuccessMessage("Habit added successfully!");
             setIsModalOpen(false); // Close modal
         },
         onError: (err: any) => {
@@ -34,10 +37,25 @@ function HabitList(): JSX.Element {
         },
     });
 
-
     const handleAddHabit = (e: React.FormEvent) => {
         e.preventDefault();
-        mutation.mutate(newHabit); // Send new habit to the backend
+        addHabitMutation.mutate(newHabit); // Send new habit to the backend
+    };
+
+    // EDIT HABIT
+    const updateHabitMutation = useMutation(updateHabit, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("habits");
+            setSuccessMessage("Habit updated successfully!");
+        },
+        onError: (err: any) => {
+            setErrorMessage(err.message);
+        },
+    });
+
+    // Function to handle editing save of an habit
+    const handleSaveEdit = (updatedHabit: Habit) => {
+        updateHabitMutation.mutate(updatedHabit);  // Invoca la mutation per aggiornare la habit
     };
 
     if (isLoading) {
@@ -75,7 +93,7 @@ function HabitList(): JSX.Element {
                 {habits?.length ? (
                     <ul className="space-y-4">
                         {habits.map((habit) => (
-                            <HabitListItem key={habit._id} habit={habit} />
+                            <HabitListItem key={habit._id} habit={habit} onSaveEdit={handleSaveEdit}/>
                         ))}
                     </ul>
                 ) : (

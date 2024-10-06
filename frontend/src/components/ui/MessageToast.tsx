@@ -27,7 +27,7 @@ export default function MessageToast({ message, showToast }: MessageToastProps):
                 //// toast on the bottom left
                 // <div className={`fixed bottom-6 ${getToastColor()} text-white px-4 py-2 rounded shadow-lg}`}>
                 // toast on the bottom center
-                <div className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 ${getToastColor()} text-white px-4 py-2 rounded shadow-lg`}>
+                <div className={`fixed bottom-6 mb-6 left-1/2 transform -translate-x-1/2 ${getToastColor()} text-white px-4 py-2 rounded shadow-lg`}>
                     {message.message}
                 </div>
             )}

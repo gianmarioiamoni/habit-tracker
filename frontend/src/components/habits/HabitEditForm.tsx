@@ -1,6 +1,5 @@
 import React from "react";
 import { Habit } from "../../interfaces/Habit";
-import { format } from "date-fns";
 
 interface HabitEditFormProps {
     newHabit: Habit;

@@ -4,11 +4,9 @@ import Habit from "../models/Habit";
 export const createHabit = async (req: Request, res: Response) => {
   try {
       const { title, description, frequency, startDate } = req.body;
-      console.log("createHabit() - req.body:", req.body);
       
       const userId = req.user?._id;
       // Assuming user is attached to request by the authMiddleware
-      console.log("createHabit() - userId:", userId);
     const newHabit = new Habit({
       title,
       description,

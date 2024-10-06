@@ -1,22 +1,23 @@
 import axios from "axios";
 
 import api from "../services/api";
+
+import { Habit } from "../interfaces/Habit";
+
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export const createHabit = async (habitData: any) => {
-//   const response = await axios.post(`${API_URL}/habits`, habitData);
   const response = await api.post(`${API_URL}/habits`, habitData);
   return response.data;
 };
 
 export const getHabits = async () => {
-    //   const response = await axios.get(`${API_URL}/habits`);
   const response = await api.get(`${API_URL}/habits`);
   return response.data;
 };
 
-export const updateHabit = async (habitId: string, habitData: any) => {
-  const response = await axios.put(`${API_URL}/habits/${habitId}`, habitData);
+export const updateHabit = async (habit: Habit) => {
+  const response = await api.put(`${API_URL}/habits/${habit._id}`, habit);
   return response.data;
 };
 
