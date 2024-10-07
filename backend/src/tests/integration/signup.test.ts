@@ -18,7 +18,7 @@ afterAll(async () => {
 
 describe("Auth API", () => {
   it("should signup a new user", async () => {
-    const res = await request(app).post("/api/auth/signup").send({
+    const res = await request(app).post("/auth/signup").send({
       name: "Test User",
       email: "testuser@example.com",
       password: "password123",
@@ -28,7 +28,7 @@ describe("Auth API", () => {
   });
 
   it("should login an existing user", async () => {
-    const res = await request(app).post("/api/auth/login").send({
+    const res = await request(app).post("/auth/login").send({
       email: "testuser@example.com",
       password: "password123",
     });
