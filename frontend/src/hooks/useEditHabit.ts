@@ -15,12 +15,12 @@ export function useEditHabit(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setEditedHabit({ ...editedHabit, [name]: value });
+    setEditedHabit((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle start date changes
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedHabit({ ...editedHabit, startDate: new Date(e.target.value) });
+    setEditedHabit((prev) => ({ ...prev, startDate: new Date(e.target.value) }));
   };
 
   // Save and cancel handlers

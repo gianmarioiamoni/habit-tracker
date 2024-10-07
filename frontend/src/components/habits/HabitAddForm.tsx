@@ -32,11 +32,12 @@ export default function HabitAddForm(
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                 <h3 className="text-lg font-semibold mb-4">Add New Habit</h3>
-                <form onSubmit={handleAddHabit}>
+                <form onSubmit={handleAddHabit} role="form">
                     {/* Title */}
                     <div className="mb-4">
-                        <label className="block text-gray-700">Habit Title</label>
+                        <label htmlFor="title" className="block text-gray-700">Habit Title</label>
                         <input
+                            id="title"
                             type="text"
                             name="title"
                             value={newHabit.title}
@@ -47,8 +48,9 @@ export default function HabitAddForm(
                     </div>
                     {/* Description */}
                     <div className="mb-4">
-                        <label className="block text-gray-700">Description</label>
+                        <label htmlFor="description" className="block text-gray-700">Description</label>
                         <input
+                            id="description"
                             type="text"
                             name="description"
                             value={newHabit.description}
@@ -59,8 +61,9 @@ export default function HabitAddForm(
                     </div>
                     {/* Frequency */}
                     <div className="mb-4">
-                        <label className="block text-gray-700">Frequency</label>
+                        <label htmlFor="frequency" className="block text-gray-700">Frequency</label>
                         <select
+                            id="frequency"
                             name="frequency"
                             value={newHabit.frequency}
                             onChange={handleFrequencyChange}
@@ -76,8 +79,9 @@ export default function HabitAddForm(
                     </div>
                     {/* Start Date */}
                     <div className="mb-4">
-                        <label className="block text-gray-700">Start Date</label>
+                        <label htmlFor="startDate" className="block text-gray-700">Start Date</label>
                         <input
+                            id="startDate"
                             type="date"
                             name="startDate"
                             onChange={handleStartDateChange}

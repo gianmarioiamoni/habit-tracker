@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { format } from "date-fns";
 
 import { Habit } from "../../interfaces/Habit";

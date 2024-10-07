@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import api from "../services/api";
 
 import { Habit } from "../interfaces/Habit";
@@ -22,7 +20,6 @@ export const updateHabit = async (habit: Habit) => {
 };
 
 export const deleteHabit = async (habitId: string) => {
-//   const response = await axios.delete(`${API_URL}/habits/${habitId}`);
   const response = await api.delete(`${API_URL}/habits/${habitId}`);
   return response.data;
 };

@@ -10,7 +10,7 @@ import {
 } from "../services/habitServices";
 
 export function useHabits() {
-  const { setSuccessMessage, setErrorMessage, setInfoMessage } = useMessage();
+  const { setSuccessMessage, setErrorMessage } = useMessage();
   const queryClient = useQueryClient();
 
   const [newHabit, setNewHabit] = useState<Habit>({

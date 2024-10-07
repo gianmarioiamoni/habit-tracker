@@ -1,6 +1,3 @@
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
-
 import { useMessage } from "../../contexts/MessageContext";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -11,7 +8,7 @@ import HabitListItem from "./HabitListItem";
 
 
 function HabitList(): JSX.Element {
-    const { setSuccessMessage, setErrorMessage, setInfoMessage } = useMessage();
+    const { setErrorMessage, setInfoMessage } = useMessage();
     const { user } = useAuth();
     // logic for the component
     const {
