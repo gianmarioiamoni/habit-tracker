@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 
-import setupSwagger from "./config/swagger";
+import setupSwagger from "./swagger";
 
 import authRouter from "./routes/authRoutes";
 import habitRouter from "./routes/habitRoutes";

@@ -12,12 +12,6 @@ import {
 
 const router = express.Router();
 
-// router.get("/", protect, (req, res) => {
-//   // router.get("/", (req, res) => {
-
-//   res.send("Protected route, access granted");
-// });
-
 /**
  * @swagger
  * /habits:

@@ -1,30 +1,4 @@
-// import express from "express";
 import mongoose from "mongoose";
-// import cors from "cors";
-// import dotenv from "dotenv";
-// import bodyParser from "body-parser";
-
-// import setupSwagger from "./config/swagger";
-
-// import authRouter from "./routes/authRoutes";
-// import habitRouter from "./routes/habitRoutes";
-
-// dotenv.config();
-
-// const app = express();
-// app.use(cors());
-// app.use(express.json());
-
-// // Configure body parser
-// app.use(bodyParser.json());
-
-// // Swagger setup
-// setupSwagger(app);
-
-// // Routes config
-// app.use('/auth', authRouter);
-// app.use('/habits', habitRouter);
-
 import app from "./app";
 
 const PORT = process.env.PORT || 5000;

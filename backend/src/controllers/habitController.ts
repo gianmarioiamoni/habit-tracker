@@ -61,12 +61,12 @@ export const deleteHabit = async (
     const { habitId } = req.params;
     const deletedHabit = await Habit.findByIdAndDelete(habitId);
     if (!deletedHabit) {
-      res.status(404).json({ error: "Habit not found" }); // Invia risposta senza return
+      res.status(404).json({ error: "Habit not found" }); 
       return;
     }
-    res.status(200).json({ message: "Habit deleted successfully" }); // Invia risposta
+    res.status(200).json({ message: "Habit deleted successfully" }); 
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete habit" }); // Invia risposta
+    res.status(500).json({ error: "Failed to delete habit" }); 
   }
 };
 
