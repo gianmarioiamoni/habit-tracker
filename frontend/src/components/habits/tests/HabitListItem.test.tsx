@@ -22,6 +22,7 @@ const mockHabit = {
     description: 'This is a test habit.',
     frequency: 'daily',
     startDate: new Date(),
+    progress: [],
 };
 
 describe('HabitListItem component', () => {

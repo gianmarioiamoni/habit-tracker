@@ -7,7 +7,8 @@ import {
   getHabits,
   updateHabit,
   deleteHabit,
-} from "../controllers/habitController";
+  completeHabit
+} from "../controllers/habitControllers";
 
 
 const router = express.Router();
@@ -165,6 +166,8 @@ router.put("/:habitId", protect, updateHabit);
  *         description: Unauthorized, missing or invalid token
  */
 router.delete("/:habitId", protect, deleteHabit);
+
+router.put("/:habitId/complete", protect, completeHabit);
 
 export default router;
 

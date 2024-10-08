@@ -19,6 +19,7 @@ export function useHabits() {
     description: "",
     frequency: "",
     startDate: new Date(),
+    progress: []
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
 

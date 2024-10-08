@@ -14,10 +14,10 @@ test('should login a user', async () => {
 
     // Simula l'input dell'utente
     fireEvent.change(screen.getByPlaceholderText(/Enter your email/i), {
-        target: { value: 'testuser@example.com' },
+        target: { value: 'gianmario.iamoni@gmail.com' },
     });
     fireEvent.change(screen.getByPlaceholderText(/Enter your password/i), {
-        target: { value: 'password123' },
+        target: { value: 'gianma67' },
     });
 
     fireEvent.click(screen.getByText(/Login/i));

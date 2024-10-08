@@ -11,8 +11,6 @@ import Footer from './components/ui/Footer';
 
 import { useMessage } from "./contexts/MessageContext"
 
-// import logo from './logo.svg';
-import './App.css';
 
 function App(): JSX.Element {
   const { showToast, message } = useMessage();

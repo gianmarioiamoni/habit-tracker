@@ -9,6 +9,7 @@ const mockNewHabit: Habit = {
     description: "",
     frequency: "",
     startDate: new Date(),
+    progress: []    
 };
 
 const mockSetNewHabit = jest.fn();

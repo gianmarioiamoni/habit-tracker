@@ -70,3 +70,18 @@ export const deleteHabit = async (
   }
 };
 
+export const completeHabit = async (req: Request, res: Response): Promise<void> => {
+  const { habitId } = req.params;
+  const habit = await Habit.findById(habitId);
+
+  if (!habit) {
+    res.status(404).json({ message: "Habit not found" });
+  } else {
+    // Add the current date to the 'progress' field
+    habit.progress.push(new Date());
+    await habit.save();
+
+    res.json(habit);
+  }
+};
+

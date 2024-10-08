@@ -4,4 +4,5 @@ export interface Habit {
     description: string;
     frequency: string;
     startDate: Date;
+    progress: Date[]
 }

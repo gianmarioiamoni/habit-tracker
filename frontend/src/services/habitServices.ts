@@ -23,3 +23,8 @@ export const deleteHabit = async (habitId: string) => {
   const response = await api.delete(`${API_URL}/habits/${habitId}`);
   return response.data;
 };
+
+export const completeHabit = async (habitId: string) => {
+  const response = await api.put(`${API_URL}/habits/${habitId}/complete`);
+  return response.data;
+};
