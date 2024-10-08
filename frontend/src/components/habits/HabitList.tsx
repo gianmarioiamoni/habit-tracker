@@ -59,7 +59,7 @@ function HabitList(): JSX.Element {
             {/* Habit list section */}
             <div className="overflow-y-auto max-h-[70vh]">
                 {habits?.length ? (
-                    <ul className="space-y-4">
+                    <ul className="space-y-4 mt-6">
                         {habits.map((habit) => (
                             <HabitListItem key={habit._id}
                                 habit={habit}

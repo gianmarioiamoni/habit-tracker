@@ -10,9 +10,10 @@ interface HabitListItemActionButtonsProps {
 
 export default function HabitListItemEditForm({isEditing, setIsEditing, handleCompletion, handleCancel, handleSave, handleDelete}: HabitListItemActionButtonsProps): JSX.Element {
     return (
-        <div className="flex flex-row space-x-4 justify-end">
-            {isEditing ? (
-                <>
+        <>
+            <div className="flex flex-row space-x-4 justify-end">
+                {isEditing ? (
+                    <>
                         <button
                             onClick={handleSave}
                             className="bg-green-600 text-white py-1 px-2 sm:py-2 sm:px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-xs sm:text-base"
@@ -27,10 +28,9 @@ export default function HabitListItemEditForm({isEditing, setIsEditing, handleCo
                         >
                             Cancel
                         </button>
-                </>
-            ) : (
-                <>
-                    <div className="relative group">
+                    </>
+                ) : (
+                    <>
                         <button
                             onClick={handleCompletion}
                             className="bg-green-600 text-white p-1 sm:p-2 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
@@ -51,11 +51,6 @@ export default function HabitListItemEditForm({isEditing, setIsEditing, handleCo
                                 />
                             </svg>
                         </button>
-                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs rounded p-1">
-                            Complete Habit
-                        </span>
-                    </div>
-                    <div className="relative group">
                         <button
                             onClick={() => setIsEditing(true)}
                             className="bg-indigo-600 text-white p-1 sm:p-2 rounded-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -76,11 +71,6 @@ export default function HabitListItemEditForm({isEditing, setIsEditing, handleCo
                                 />
                             </svg>
                         </button>
-                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs rounded p-1">
-                            Edit Habit
-                        </span>
-                    </div>
-                    <div className="relative group">
                         <button
                             className="text-red-500 hover:text-red-600 p-1 sm:p-2 rounded-full transition duration-300"
                             aria-label="Delete Habit"
@@ -101,12 +91,9 @@ export default function HabitListItemEditForm({isEditing, setIsEditing, handleCo
                                 />
                             </svg>
                         </button>
-                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs rounded p-1">
-                            Delete Habit
-                        </span>
-                    </div>
-                </>
-            )}
-        </div>
-    );
+                    </>
+                )}
+            </div>
+        </>
+    )
 }
