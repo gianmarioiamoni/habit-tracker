@@ -57,6 +57,12 @@ export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: Habi
         }
     };
 
+    const handleDeleteProgress = (entryDate: Date) => {
+        const updatedHabit = { ...habit, progress: habit.progress.filter((entry) => new Date(entry).getTime() !== entryDate.getTime()) };
+        onSaveEdit(updatedHabit);
+    };
+
+
     return (
         <li className="bg-white shadow-md rounded-lg p-4 space-y-4 sm:flex sm:justify-between sm:items-start sm:space-y-0">
             
@@ -74,7 +80,7 @@ export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: Habi
                 )}
 
                 {/* Progress History Section */}
-                <HabitListItemProgressHistory habit={habit} />
+                <HabitListItemProgressHistory habit={habit} handleDeleteProgress={handleDeleteProgress}/>
 
             </div>
 
