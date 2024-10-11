@@ -46,7 +46,7 @@ export default function HabitListItemProgressHistory({
                         </li>
                     ))
                 ) : (
-                    <li>No progress recorded yet</li>
+                        <li className="text-xs ml-4 text-orange-400">No progress recorded yet</li>
                 )}
             </ul>
         </div>

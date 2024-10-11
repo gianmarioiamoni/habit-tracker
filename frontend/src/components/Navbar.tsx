@@ -5,11 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useMessage } from '../contexts/MessageContext';
 
-// interface NavbarProps {
-//     setShowToast: (showToast: boolean) => void;
-// }
-// const Navbar: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
-// function Navbar({ setShowToast }: NavbarProps): JSX.Element {
 function Navbar(): JSX.Element {
     const { isLoggedIn } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,7 +32,10 @@ function Navbar(): JSX.Element {
                     {isLoggedIn ? (
                         <>
                             <Link to="/dashboard" className="text-white hover:text-gray-300">
-                                Dashboard
+                                Habits List
+                            </Link>
+                            <Link to="/habits/dashboard" className="text-white hover:text-gray-300">
+                                Habits Dashboard
                             </Link>
                             <button onClick={handleLogout} className="text-white hover:text-gray-300">Logout</button>
                         </>
@@ -74,7 +72,10 @@ function Navbar(): JSX.Element {
                     {isLoggedIn ? (
                         <>
                             <Link to="/dashboard" className="block text-white hover:text-gray-300">
-                                Dashboard
+                                Habits List
+                            </Link>
+                            <Link to="/habits/dashboard" className="block text-white hover:text-gray-300">
+                                Habits Dashboard
                             </Link>
                             <button onClick={handleLogout} className="block text-white hover:text-gray-300">Logout</button>
                         </>

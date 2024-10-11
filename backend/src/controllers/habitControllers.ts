@@ -3,10 +3,11 @@ import Habit from "../models/Habit";
 
 export const createHabit = async (req: Request, res: Response) => {
   try {
-      const { title, description, frequency, startDate } = req.body;
-      
-      const userId = req.user?._id;
-      // Assuming user is attached to request by the authMiddleware
+    const { title, description, frequency, startDate } = req.body;
+    
+    const userId = req.user?._id;
+    // Assuming user is attached to request by the authMiddleware
+
     const newHabit = new Habit({
       title,
       description,
@@ -84,4 +85,34 @@ export const completeHabit = async (req: Request, res: Response): Promise<void> 
     res.json(habit);
   }
 };
+
+export const getDashboardData = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user._id;
+
+    // Find all habits for the user
+    const habits = await Habit.find({ userId });
+
+    // Compute total number of days completed by the user for each habit
+    const totalDaysCompleted = habits.reduce((acc, habit) => {
+      return acc + habit.progress.length;
+    }, 0);
+
+    // Find the top 3 most frequent habits
+    const mostFrequentHabit = habits
+      .sort((a, b) => b.progress.length - a.progress.length)
+      .slice(0, 3); // Slice to get the top 3
+
+    
+    res.status(200).json({
+      totalHabits: habits.length,
+      totalDaysCompleted,
+      mostFrequentHabit,
+    });
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    res.status(500).json({ message: "Failed to fetch dashboard data" });
+  }
+};
+
 

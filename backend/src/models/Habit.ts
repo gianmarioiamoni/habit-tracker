@@ -16,7 +16,7 @@ const HabitSchema = new Schema<IHabit>(
     frequency: { type: String, required: true },
     startDate: { type: Date },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    progress: [{ type: Date }] // Define an array of Date
+    progress: [{ type: Date, default: [] }] // Define an array of Date
   },
   { timestamps: true }
 );

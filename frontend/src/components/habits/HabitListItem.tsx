@@ -1,9 +1,7 @@
-import { format } from "date-fns";
 import { Habit } from "../../interfaces/Habit";
 import ConfirmationDialog from "../ui/ConfirmationDialog";
 import { useEditHabit } from "../../hooks/useEditHabit";
 import { useDeleteHabit } from "../../hooks/useDeleteHabit";
-import { frequencyOptions } from "../../utils/frequencyOptions";
 import { completeHabit } from "../../services/habitServices";
 import { useMessage } from "../../contexts/MessageContext";
 

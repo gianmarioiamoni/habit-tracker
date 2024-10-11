@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Signup from './components/auth/Signup';
 import Login from './components/auth/Login';
-import HabitList from './components/habits/HabitList'; 
+import HabitList from './components/habits/HabitList';
+import HabitsDashbord from './components/habits/HabitsDasboard'; 
 import ProtectedRoute from '../src/components/auth/ProtectedRoute';
 import Navbar from './components/Navbar';
 import MessageToast from './components/ui/MessageToast';
@@ -36,6 +37,14 @@ function App(): JSX.Element {
                 element={
                   <ProtectedRoute>
                     <HabitList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/habits/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <HabitsDashbord />
                   </ProtectedRoute>
                 }
               />

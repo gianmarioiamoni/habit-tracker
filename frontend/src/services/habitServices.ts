@@ -28,3 +28,8 @@ export const completeHabit = async (habitId: string) => {
   const response = await api.put(`${API_URL}/habits/${habitId}/complete`);
   return response.data;
 };
+
+export const getDashboardData = async () => {
+  const response = await api.get(`${API_URL}/habits/dashboard`);
+  return response.data;
+};
