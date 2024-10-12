@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { login as loginService, signup as signupService } from '../services/authServices';
 
 interface UserType {
@@ -20,11 +20,28 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Context provider
 export function AuthProvider({ children }: { children: React.ReactNode }): JSX.Element {
-    
+
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     // define user of type UserType as state and set it to an empty user
     const [user, setUser] = useState<UserType>({ id: 0, name: '', email: '' });
-        
+
+    // Check if the user is already logged in when page load
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // if the token is present, the user is logged in
+            setIsLoggedIn(true);
+
+            // Retrieve user info from the token 
+            // decode JWT token to extract user info from it
+            const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
+            if (savedUser && savedUser.id) {
+                setUser(savedUser);  // Set the user details from localStorage
+            }
+        }
+    }, []); 
+
+
     const login = async (userData: { email: string, password: string }) => {
         // Perform login logic
         try {
@@ -37,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
             console.log("Error during login:", error);
             throw error;
         }
-        
+
     };
 
     const signup = async (userData: { name: string, email: string, password: string }) => {
@@ -76,3 +93,4 @@ export const useAuth = () => {
     }
     return context;
 };
+

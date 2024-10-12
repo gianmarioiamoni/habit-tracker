@@ -86,33 +86,74 @@ export const completeHabit = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-export const getDashboardData = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user._id;
+// export const getDashboardData = async (req: Request, res: Response) => {
+//   try {
+//     const userId = req.user._id;
 
-    // Find all habits for the user
-    const habits = await Habit.find({ userId });
+//     // Find all habits for the user
+//     const habits = await Habit.find({ userId });
 
-    // Compute total number of days completed by the user for each habit
-    const totalDaysCompleted = habits.reduce((acc, habit) => {
-      return acc + habit.progress.length;
-    }, 0);
+//     // Compute total number of days completed by the user for each habit
+//     const totalDaysCompleted = habits.reduce((acc, habit) => {
+//       return acc + habit.progress.length;
+//     }, 0);
 
-    // Find the top 3 most frequent habits
-    const mostFrequentHabit = habits
-      .sort((a, b) => b.progress.length - a.progress.length)
-      .slice(0, 3); // Slice to get the top 3
+//     // Find the top 3 most frequent habits
+//     const mostFrequentHabit = habits
+//       .sort((a, b) => b.progress.length - a.progress.length)
+//       .slice(0, 3); // Slice to get the top 3
 
     
-    res.status(200).json({
-      totalHabits: habits.length,
+//     res.status(200).json({
+//       totalHabits: habits.length,
+//       totalDaysCompleted,
+//       mostFrequentHabit,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching dashboard data:", error);
+//     res.status(500).json({ message: "Failed to fetch dashboard data" });
+//   }
+// };
+
+export const getDashboardData = async (req: Request, res: Response) => {
+  const { timeFilter } = req.query;
+
+  let startDate;
+  const today = new Date();
+
+  // Set start date based on the selected filter
+  if (timeFilter === "7") {
+    startDate = new Date(today.setDate(today.getDate() - 7));
+  } else if (timeFilter === "30") {
+    startDate = new Date(today.setDate(today.getDate() - 30));
+  } else {
+    startDate = null; // No flter stands for "all"
+  }
+
+  // Create the query to get the filtered data
+  let query = {};
+  if (startDate) {
+    query = { date: { $gte: startDate } }; // Filter by date
+  }
+
+  try {
+    const habits = await Habit.find(query).populate("user");
+    const totalHabits = habits.length;
+    const totalDaysCompleted = habits.reduce(
+      (acc, habit) => acc + habit.progress.length,
+      0
+    );
+    const mostFrequentHabit = habits.slice(0, 5); // select 5 most frequent habits
+
+    res.json({
+      totalHabits,
       totalDaysCompleted,
       mostFrequentHabit,
     });
   } catch (error) {
-    console.error("Error fetching dashboard data:", error);
-    res.status(500).json({ message: "Failed to fetch dashboard data" });
+    res.status(500).json({ message: "Error fetching dashboard data", error });
   }
 };
+
 
 

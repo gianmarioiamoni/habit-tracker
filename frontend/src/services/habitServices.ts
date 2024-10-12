@@ -29,7 +29,10 @@ export const completeHabit = async (habitId: string) => {
   return response.data;
 };
 
-export const getDashboardData = async () => {
-  const response = await api.get(`${API_URL}/habits/dashboard`);
+export const getDashboardData = async (timeFilter: string) => {
+  const response = await api.get(
+    `${API_URL}/habits/dashboard?timeFilter=${timeFilter}`
+  );
   return response.data;
 };
+

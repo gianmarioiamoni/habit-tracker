@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Context definition
 export interface MessageType {
@@ -14,7 +14,7 @@ interface MessageContextType {
     showToast: boolean;
 }
 
-// Context creation 
+// Context creation
 const MessageContext = createContext<MessageContextType | undefined>(undefined);
 
 // Context provider
@@ -22,45 +22,39 @@ export function MessageProvider({ children }: { children: React.ReactNode }): JS
     const [message, setMessage] = useState<MessageType>({
         messageType: 'INFO',
         message: '',
-    })
+    });
     const [showToast, setShowToast] = useState<boolean>(false);
+    let timeoutId: ReturnType<typeof setTimeout> | null = null; // Per tenere traccia del timeout
 
-    const setSuccessMessage = (msg: string) => {
+    // Set the message and show the toast 
+    const showMessage = (msg: string, type: 'SUCCESS' | 'ERROR' | 'WARNING' | 'INFO') => {
+        setMessage({ messageType: type, message: msg });
         setShowToast(true);
-        setMessage({ messageType: 'SUCCESS', message: msg });
-        // Remove toast after 3 seconds
-        setTimeout(() => {
+
+        // Clean up the previous timeout before creating a new one
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
+        // Hide the toast after 3 sec
+        timeoutId = setTimeout(() => {
             setShowToast(false);
         }, 3000);
     };
 
-    const setErrorMessage = (msg: string) => {
-        setShowToast(true);
-        setMessage({ messageType: 'ERROR', message: msg });
-        // Remove toast after 3 seconds
-        setTimeout(() => {
-            setShowToast(false);
-        }, 3000);
-    };
+    // Cleanup when the component unmounts
+    useEffect(() => {
+        return () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+        };
+    }, []);
 
-    const setWarningMessage = (msg: string) => {
-        setShowToast(true);
-        setMessage({ messageType: 'WARNING', message: msg });
-        // Remove toast after 3 seconds
-        setTimeout(() => {
-            setShowToast(false);
-        }, 3000);
-    };
-
-    const setInfoMessage = (msg: string) => {
-        setShowToast(true);
-        setMessage({ messageType: 'INFO', message: msg });
-        // Remove toast after 3 seconds
-        setTimeout(() => {
-            setShowToast(false);
-        }, 3000);
-    };
-
+    const setSuccessMessage = (msg: string) => showMessage(msg, 'SUCCESS');
+    const setErrorMessage = (msg: string) => showMessage(msg, 'ERROR');
+    const setWarningMessage = (msg: string) => showMessage(msg, 'WARNING');
+    const setInfoMessage = (msg: string) => showMessage(msg, 'INFO');
 
     return (
         <MessageContext.Provider value={{
@@ -68,7 +62,8 @@ export function MessageProvider({ children }: { children: React.ReactNode }): JS
             setErrorMessage,
             setWarningMessage,
             setInfoMessage,
-            setSuccessMessage, showToast
+            setSuccessMessage,
+            showToast,
         }}>
             {children}
         </MessageContext.Provider>
@@ -79,7 +74,8 @@ export function MessageProvider({ children }: { children: React.ReactNode }): JS
 export const useMessage = () => {
     const context = useContext(MessageContext);
     if (context === undefined) {
-        throw new Error('useAuth must be used within an AuthProvider');
+        throw new Error('useMessage must be used within a MessageProvider');
     }
     return context;
 };
+

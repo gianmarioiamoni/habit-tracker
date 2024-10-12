@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useMessage } from "../../contexts/MessageContext";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -26,13 +27,26 @@ function HabitList(): JSX.Element {
     } = useHabits();
     
 
-    if (isLoading) {
-        setInfoMessage("Loading habits...");
-    }
+    // if (isLoading) {
+    //     setInfoMessage("Loading habits...");
+    // }
 
-    if (isError && error) {
-        setErrorMessage(error.message);
-    }
+    // if (isError && error) {
+    //     setErrorMessage(error.message);
+    // }
+    // useEffect to show messages after the rendering
+    useEffect(() => {
+        if (isLoading) {
+            setInfoMessage("Loading dashboard...");
+        }
+    }, [isLoading, setInfoMessage]);
+
+    useEffect(() => {
+        if (error) {
+            setInfoMessage("Error while fetching habits.");
+        }
+    }, [error, setInfoMessage]);
+
 
     return (
         <div className="container mx-auto px-24 py-4">
