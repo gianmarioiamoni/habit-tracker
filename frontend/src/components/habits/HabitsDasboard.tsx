@@ -15,6 +15,9 @@ export default function HabitsDashboard(): JSX.Element {
     // Fetch data based on the selected time filter
     const { data, error, isLoading } = useQuery(['dashboardData', timeFilter], () => getDashboardData(timeFilter));
 
+    console.log("HabitsDashboard - data:", data);
+
+
     const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setTimeFilter(event.target.value);
     };

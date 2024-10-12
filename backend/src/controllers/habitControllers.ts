@@ -117,27 +117,34 @@ export const completeHabit = async (req: Request, res: Response): Promise<void> 
 
 export const getDashboardData = async (req: Request, res: Response) => {
   const { timeFilter } = req.query;
-
-  let startDate;
+  console.log("getDashboardData: timeFilter:", timeFilter);
+  let date;
   const today = new Date();
 
   // Set start date based on the selected filter
   if (timeFilter === "7") {
-    startDate = new Date(today.setDate(today.getDate() - 7));
+    date = new Date(today.setDate(today.getDate() - 7));
   } else if (timeFilter === "30") {
-    startDate = new Date(today.setDate(today.getDate() - 30));
+    date = new Date(today.setDate(today.getDate() - 30));
   } else {
-    startDate = null; // No flter stands for "all"
+    date = null; // No flter stands for "all"
   }
+
+  console.log(`getDashboardData: timeFilter: ${timeFilter}, startDate: ${date}`);
 
   // Create the query to get the filtered data
   let query = {};
-  if (startDate) {
-    query = { date: { $gte: startDate } }; // Filter by date
+  if (date) {
+    query = { startDate: { $gte: date } }; // Filter by date
   }
 
+  console.log(`getDashboardData: query: ${JSON.stringify(query)}`);
+
   try {
-    const habits = await Habit.find(query).populate("user");
+    // Find all habits for the user
+
+    const habits = await Habit.find(query).populate("userId");
+    console.log(`getDashboardData: habits: ${JSON.stringify(habits)}`);
     const totalHabits = habits.length;
     const totalDaysCompleted = habits.reduce(
       (acc, habit) => acc + habit.progress.length,
@@ -145,12 +152,19 @@ export const getDashboardData = async (req: Request, res: Response) => {
     );
     const mostFrequentHabit = habits.slice(0, 5); // select 5 most frequent habits
 
+    console.log(
+      `getDashboardData: totalHabits: ${totalHabits}, totalDaysCompleted: ${totalDaysCompleted}, mostFrequentHabit: ${JSON.stringify(
+        mostFrequentHabit
+      )}`
+    );
+
     res.json({
       totalHabits,
       totalDaysCompleted,
       mostFrequentHabit,
     });
   } catch (error) {
+    console.error(`getDashboardData: error: ${error}`);
     res.status(500).json({ message: "Error fetching dashboard data", error });
   }
 };
