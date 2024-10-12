@@ -86,38 +86,8 @@ export const completeHabit = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-// export const getDashboardData = async (req: Request, res: Response) => {
-//   try {
-//     const userId = req.user._id;
-
-//     // Find all habits for the user
-//     const habits = await Habit.find({ userId });
-
-//     // Compute total number of days completed by the user for each habit
-//     const totalDaysCompleted = habits.reduce((acc, habit) => {
-//       return acc + habit.progress.length;
-//     }, 0);
-
-//     // Find the top 3 most frequent habits
-//     const mostFrequentHabit = habits
-//       .sort((a, b) => b.progress.length - a.progress.length)
-//       .slice(0, 3); // Slice to get the top 3
-
-    
-//     res.status(200).json({
-//       totalHabits: habits.length,
-//       totalDaysCompleted,
-//       mostFrequentHabit,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching dashboard data:", error);
-//     res.status(500).json({ message: "Failed to fetch dashboard data" });
-//   }
-// };
-
 export const getDashboardData = async (req: Request, res: Response) => {
   const { timeFilter } = req.query;
-  console.log("getDashboardData: timeFilter:", timeFilter);
   let date;
   const today = new Date();
 
@@ -130,33 +100,22 @@ export const getDashboardData = async (req: Request, res: Response) => {
     date = null; // No flter stands for "all"
   }
 
-  console.log(`getDashboardData: timeFilter: ${timeFilter}, startDate: ${date}`);
-
   // Create the query to get the filtered data
   let query = {};
   if (date) {
     query = { startDate: { $gte: date } }; // Filter by date
   }
 
-  console.log(`getDashboardData: query: ${JSON.stringify(query)}`);
-
   try {
     // Find all habits for the user
 
     const habits = await Habit.find(query).populate("userId");
-    console.log(`getDashboardData: habits: ${JSON.stringify(habits)}`);
     const totalHabits = habits.length;
     const totalDaysCompleted = habits.reduce(
       (acc, habit) => acc + habit.progress.length,
       0
     );
     const mostFrequentHabit = habits.slice(0, 5); // select 5 most frequent habits
-
-    console.log(
-      `getDashboardData: totalHabits: ${totalHabits}, totalDaysCompleted: ${totalDaysCompleted}, mostFrequentHabit: ${JSON.stringify(
-        mostFrequentHabit
-      )}`
-    );
 
     res.json({
       totalHabits,
