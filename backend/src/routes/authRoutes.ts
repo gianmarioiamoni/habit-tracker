@@ -1,6 +1,6 @@
 import express from "express";
 
-import { login, signup } from "../controllers/authControllers";
+import { login, signup, logout } from "../controllers/authControllers";
 
 const router = express.Router();
 
@@ -55,5 +55,7 @@ router.post("/signup", signup);
  *         description: Unauthorized
  */
 router.post("/login", login);
+
+router.post("/logout", logout);
 
 export default router;

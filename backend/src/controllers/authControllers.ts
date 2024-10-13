@@ -90,3 +90,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// @desc    Logout user
+// @route   GET /api/auth/logout
+// @access  Public
+export const logout = async (req: Request, res: Response): Promise<void> => {
+  res.clearCookie('authToken');
+  res.status(200).json({ message: 'Logged out successfully' });
+};

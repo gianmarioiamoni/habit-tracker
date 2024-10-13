@@ -1,5 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { login as loginService, signup as signupService } from '../services/authServices';
+import {
+    login as loginService,
+    signup as signupService,
+    logout as logoutService
+} from '../services/authServices';
 
 interface UserType {
     id: number;
@@ -72,10 +76,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
 
     };
 
-    const logout = () => {
+    const logout = async () => {
         setIsLoggedIn(false);
-        localStorage.removeItem('token');
         setUser({ id: 0, name: '', email: '' });
+        try {
+            await logoutService();
+        } catch (error) {
+            console.log("Error during logout:", error);
+            throw error;
+        }
     };
 
     return (
