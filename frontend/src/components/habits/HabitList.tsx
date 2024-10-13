@@ -15,7 +15,6 @@ function HabitList(): JSX.Element {
     const {
         habits,
         isLoading,
-        isError,
         error,
         newHabit,
         setNewHabit,
@@ -27,13 +26,6 @@ function HabitList(): JSX.Element {
     } = useHabits();
     
 
-    // if (isLoading) {
-    //     setInfoMessage("Loading habits...");
-    // }
-
-    // if (isError && error) {
-    //     setErrorMessage(error.message);
-    // }
     // useEffect to show messages after the rendering
     useEffect(() => {
         if (isLoading) {
@@ -43,9 +35,9 @@ function HabitList(): JSX.Element {
 
     useEffect(() => {
         if (error) {
-            setInfoMessage("Error while fetching habits.");
+            setErrorMessage("Error while fetching habits.");
         }
-    }, [error, setInfoMessage]);
+    }, [error, setErrorMessage]);
 
 
     return (

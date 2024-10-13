@@ -1,35 +1,34 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import User from "../models/Users";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import User from "../models/Users"; 
 
-interface JwtPayload {
-  id: string;
-}
-
-export const protect = async (req: Request, res: Response, next: NextFunction) => {
+export const protect = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   let token;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
+  // Check if token exists in cookies
+  if (req.cookies && req.cookies.authToken) {
     try {
-      token = req.headers.authorization.split(" ")[1];
+      // Retieve the token from cookies
+      token = req.cookies.authToken;
 
+      // Decode the JWT token
       const decoded = jwt.verify(
         token,
         process.env.JWT_SECRET as string
       ) as JwtPayload;
 
+      // Retrieve the user from the database and add it to the request object
       req.user = await User.findById(decoded.id).select("-password");
 
-      next();
+      next(); 
     } catch (error) {
       res.status(401).json({ message: "Not authorized, token failed" });
     }
-  }
-
-  if (!token) {
+  } else {
     res.status(401).json({ message: "Not authorized, no token" });
   }
 };

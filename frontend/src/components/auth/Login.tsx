@@ -21,7 +21,6 @@ function Login(): JSX.Element {
         return response;
     }, {
         onSuccess: (data) => {
-            // save JWT to local storage
             navigate('/dashboard');
             setSuccessMessage("Welcome to Habit Tracker!");
         },

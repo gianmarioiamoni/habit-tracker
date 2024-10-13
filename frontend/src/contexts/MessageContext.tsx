@@ -49,7 +49,7 @@ export function MessageProvider({ children }: { children: React.ReactNode }): JS
                 clearTimeout(timeoutId);
             }
         };
-    }, []);
+    }, [timeoutId]);
 
     const setSuccessMessage = (msg: string) => showMessage(msg, 'SUCCESS');
     const setErrorMessage = (msg: string) => showMessage(msg, 'ERROR');
