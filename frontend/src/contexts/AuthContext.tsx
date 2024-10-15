@@ -2,17 +2,19 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
     login as loginService,
     signup as signupService,
-    logout as logoutService
+    logout as logoutService,
+    checkAuthStatus as checkAuthStatusService
 } from '../services/authServices';
 
 interface UserType {
     id: number;
     name: string;
     email: string;
-}
+} 
 // Context definition
 interface AuthContextType {
-    user: UserType;
+    user: UserType | null;
+    error: string | null;
     isLoggedIn: boolean;
     login: (userData: { email: string, password: string }) => any;
     signup: (userData: { name: string, email: string, password: string }) => any;
@@ -27,27 +29,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
 
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     // define user of type UserType as state and set it to an empty user
-    const [user, setUser] = useState<UserType>({ id: 0, name: '', email: '' });
+    const [user, setUser] = useState<UserType | null>({ id: 0, name: '', email: '' });
+    const [error, setError] = useState<string | null>(null); 
 
-    // Check if the user is already logged in when page load
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            // if the token is present, the user is logged in
-            setIsLoggedIn(true);
-
-            // Retrieve user info from the token 
-            // decode JWT token to extract user info from it
-            const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
-            if (savedUser && savedUser.id) {
-                setUser(savedUser);  // Set the user details from localStorage
+        // Call API to verify auth status 
+        const verifyLogin = async () => {
+            const { user, error } = await checkAuthStatusService();
+            if (user) {
+                setIsLoggedIn(true);  // L'utente è loggato
+                setUser(user);        // Imposta le informazioni dell'utente
+                setError(null);       // Nessun errore
+            } else {
+                setIsLoggedIn(false); // L'utente non è loggato
+                setUser(null);
+                setError(error);      // Memorizza l'errore
             }
-        }
-    }, []); 
+        };
+
+        verifyLogin();
+    }, []);
 
 
     const login = async (userData: { email: string, password: string }) => {
-        // Perform login logic
         try {
             const data = await loginService(userData);
             setUser({ name: data.name, email: data.email, id: data._id });
@@ -88,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn, login, signup, logout }}>
+        <AuthContext.Provider value={{ user, error, isLoggedIn, login, signup, logout }}>
             {children}
         </AuthContext.Provider>
     );

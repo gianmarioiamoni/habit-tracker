@@ -14,13 +14,9 @@ const SERVER_URL = process.env.SERVER_URL || "http://localhost:5000";
 dotenv.config();
 
 const app = express();
-// app.use(
-//   cors({
-//     origin: process.env.FRONTEND_URL, // Set the origin of the allowed requests
-//     credentials: true, // Allow cookies to be sent with requests
-//   })
-// );
+
 console.log("FRONTEND_URL: ", process.env.FRONTEND_URL)
+
 app.use(
   cors({
     origin: process.env.FRONTEND_URL, // Assicurati che sia http://localhost:3000

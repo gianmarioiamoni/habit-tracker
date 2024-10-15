@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
+import validator from 'validator';
+
 import { useAuth } from '../../contexts/AuthContext';
 import { useMessage } from '../../contexts/MessageContext'; 
 
@@ -31,7 +33,21 @@ function Signup(): JSX.Element {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        mutate({ name, email, password });
+
+        if (!validator.isEmail(email)) {
+            setErrorMessage("Invalid email format");
+            return;
+        }
+
+        if (!validator.isLength(password, { min: 6 })) {
+            setErrorMessage("Password must be at least 6 characters");
+            return;
+        }
+
+        const sanitizedEmail = validator.normalizeEmail(email) || '';
+        const sanitizedName = validator.escape(name);
+
+        mutate({ name: sanitizedName, email: sanitizedEmail, password });
     };
 
     return (

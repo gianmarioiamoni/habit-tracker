@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+
+import validator from 'validator';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { useMessage } from '../../contexts/MessageContext';
@@ -8,15 +10,24 @@ import { useMessage } from '../../contexts/MessageContext';
 function Login(): JSX.Element {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [validationErrors, setValidationErrors] = useState<{ email?: string; password?: string }>({}); 
 
     const navigate = useNavigate();
     const { login: loginContext } = useAuth();
 
     const { setSuccessMessage, setErrorMessage } = useMessage();
 
+    // Show validation errors if any
+    useEffect(() => {
+        if (Object.keys(validationErrors).length > 0) {
+            validationErrors.email && setErrorMessage(validationErrors.email);
+            validationErrors.password && setErrorMessage(validationErrors.password);
+        }
+    }, [validationErrors, setErrorMessage]);
 
     // Mutation to send login request
     const mutation = useMutation(async () => {
+        console.log('email', email, 'password', password);
         const response = await loginContext({ email, password });
         return response;
     }, {
@@ -32,6 +43,30 @@ function Login(): JSX.Element {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Reset errors
+        setValidationErrors({});
+
+        // VALIDATION
+        const newErrors: { email?: string; password?: string } = {};
+
+        if (!validator.isEmail(email)) {
+            newErrors.email = 'Invalid email format';
+        }
+
+        if (validator.isEmpty(password)) {
+            newErrors.password = "Password is required";
+        }
+
+        if (password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setValidationErrors(newErrors);
+            return;
+        }
+
         mutation.mutate();
     };
 

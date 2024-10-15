@@ -53,7 +53,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -98,7 +98,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -125,47 +125,26 @@ export const checkAuthStatus = async (
   res: Response
 ): Promise<void> => {
   try {
-    // const token = req.cookies["authToken"];
-    const token = req.cookies.authToken;
-    console.log("req.cookies:", req.cookies)
-    console.log("Token1:", token);
+    const token = req.cookies["authToken"]; 
 
+    // Controlla se il token è presente.
     if (!token) {
       res.status(401).json({ message: "Not authenticated" });
-      return;
+      return; 
     }
 
-    console.log("Token2:", token);
+    // Decodifica il token e verifica l'utente.
+    const decodedToken = jwt.verify(token, secret) as TokenPayload;
+    const user = await User.findById(decodedToken.id).select("-password");
 
-    const decodedToken = jwt.verify(token, secret) as unknown;
-
-    if (
-      typeof decodedToken === "object" &&
-      decodedToken !== null &&
-      "id" in decodedToken
-    ) {
-      const decoded = decodedToken as TokenPayload;
-
-      console.log("Decoded token:", decoded);
-
-      const user = await User.findById(decoded.id).select("-password");
-
-      if (!user) {
-        res.status(401).json({ message: "User not found" });
-        return;
-      }
-
+    // Se l'utente esiste, restituisci i dati dell'utente, altrimenti restituisci un errore.
+    if (user) {
       res.json({ user });
-      return;
-
     } else {
-      res.status(401).json({ message: "Invalid token" });
-      return;
+      res.status(401).json({ message: "User not found" });
     }
   } catch (error) {
-    console.error("Error when verifying token:", error);
     res.status(401).json({ message: "Invalid token" });
-    return;
   }
 };
 

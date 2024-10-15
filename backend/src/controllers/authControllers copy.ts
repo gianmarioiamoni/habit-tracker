@@ -53,16 +53,18 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(201).json({
-      _id: newUser._id,
-      name: newUser.name,
-      email: newUser.email,
-      token,
-    });
+    res
+      .status(201)
+      .json({
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        token,
+      });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -98,7 +100,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -120,22 +122,14 @@ interface TokenPayload extends JwtPayload {
   id: string;
 }
 
-export const checkAuthStatus = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const checkAuthStatus = async (req: Request, res: Response): Promise<void> => {
   try {
-    // const token = req.cookies["authToken"];
-    const token = req.cookies.authToken;
-    console.log("req.cookies:", req.cookies)
-    console.log("Token1:", token);
+    const token = req.cookies["authToken"];
 
     if (!token) {
       res.status(401).json({ message: "Not authenticated" });
       return;
     }
-
-    console.log("Token2:", token);
 
     const decodedToken = jwt.verify(token, secret) as unknown;
 
@@ -146,8 +140,6 @@ export const checkAuthStatus = async (
     ) {
       const decoded = decodedToken as TokenPayload;
 
-      console.log("Decoded token:", decoded);
-
       const user = await User.findById(decoded.id).select("-password");
 
       if (!user) {
@@ -156,14 +148,11 @@ export const checkAuthStatus = async (
       }
 
       res.json({ user });
-      return;
-
     } else {
       res.status(401).json({ message: "Invalid token" });
       return;
     }
   } catch (error) {
-    console.error("Error when verifying token:", error);
     res.status(401).json({ message: "Invalid token" });
     return;
   }
