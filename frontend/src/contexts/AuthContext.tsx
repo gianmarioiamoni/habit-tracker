@@ -19,6 +19,7 @@ interface AuthContextType {
     login: (userData: { email: string, password: string }) => any;
     signup: (userData: { name: string, email: string, password: string }) => any;
     logout: () => void;
+    checkAuthStatus: () => void;
 }
 
 // Context creation 
@@ -35,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     useEffect(() => {
         // Call API to verify auth status 
         const verifyLogin = async () => {
-            const { user, error } = await checkAuthStatusService();
+            const { user } = await checkAuthStatusService();
             if (user) {
                 setIsLoggedIn(true);  // L'utente è loggato
                 setUser(user);        // Imposta le informazioni dell'utente
@@ -43,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
             } else {
                 setIsLoggedIn(false); // L'utente non è loggato
                 setUser(null);
-                setError(error);      // Memorizza l'errore
+                // setError(error);      // Memorizza l'errore
             }
         };
 
@@ -55,7 +56,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
         try {
             const data = await loginService(userData);
             setUser({ name: data.name, email: data.email, id: data._id });
-            localStorage.setItem('token', data.token);
             setIsLoggedIn(true);
             return data;
         } catch (error) {
@@ -70,7 +70,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
         try {
             const data = await signupService(userData);
             setUser({ name: data.name, email: data.email, id: data._id });
-            localStorage.setItem('token', data.token);
             setIsLoggedIn(true);
             return data;
         } catch (error) {
@@ -91,8 +90,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
         }
     };
 
+    const checkAuthStatus = async () => {
+        try {
+            const data = await checkAuthStatusService(); 
+            setUser(data.user);
+            setIsLoggedIn(true);
+        } catch {
+            setIsLoggedIn(false);
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, error, isLoggedIn, login, signup, logout }}>
+        <AuthContext.Provider value={{ user, error, isLoggedIn, login, signup, logout, checkAuthStatus }}>
             {children}
         </AuthContext.Provider>
     );

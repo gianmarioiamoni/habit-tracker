@@ -23,13 +23,15 @@ export function useHabits() {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch data using useQuery
+  // GET ALL HABITS
   const {
     data: habits,
     isLoading,
     isError,
-    error,
   } = useQuery<Habit[], Error>("habits", getHabits);
+  console.log("habits", habits);
+  console.log("isLoading", isLoading);
+  console.log("isError", isError);
 
   // ADD NEW HABIT
   const addHabitMutation = useMutation(createHabit, {
@@ -82,7 +84,6 @@ export function useHabits() {
     habits,
     isLoading,
     isError,
-    error,
     newHabit,
     setNewHabit,
     isModalOpen,

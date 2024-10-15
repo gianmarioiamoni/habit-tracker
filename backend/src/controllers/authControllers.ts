@@ -74,7 +74,14 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
-  const sanitizedEmail = validator.normalizeEmail(email) || "";
+  const sanitizedEmail =
+    validator.normalizeEmail(email, {
+      gmail_remove_dots: false, // Mantiene i punti nei nomi utente Gmail
+      gmail_remove_subaddress: false, // Mantiene i subaddress negli indirizzi Gmail
+      gmail_convert_googlemaildotcom: true, // Converte @googlemail.com in @gmail.com
+      all_lowercase: true, // Converte in minuscolo (mantenuto per evitare discrepanze)
+    }) || "";
+
 
   if (!validator.isEmail(sanitizedEmail)) {
     res.status(400).json({ message: "Invalid email format" });
@@ -95,6 +102,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const token = generateToken(user);
+
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -105,11 +113,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res
       .status(200)
       .json({ _id: user._id, name: user.name, email: user.email, token });
+    return;
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+    return;
   }
 };
-
 const secret = process.env.JWT_SECRET || "MyLocalJWTSecret";
 if (!secret) {
   throw new Error("JWT_SECRET environment variable is not set");
@@ -131,7 +140,7 @@ export const checkAuthStatus = async (
     console.log("Token1:", token);
 
     if (!token) {
-      res.status(401).json({ message: "Not authenticated" });
+      res.status(201).json({ user: null });
       return;
     }
 
@@ -151,7 +160,7 @@ export const checkAuthStatus = async (
       const user = await User.findById(decoded.id).select("-password");
 
       if (!user) {
-        res.status(401).json({ message: "User not found" });
+        res.status(201).json({ user: null });
         return;
       }
 
@@ -159,12 +168,12 @@ export const checkAuthStatus = async (
       return;
 
     } else {
-      res.status(401).json({ message: "Invalid token" });
+      res.status(201).json({ user: null });
       return;
     }
   } catch (error) {
     console.error("Error when verifying token:", error);
-    res.status(401).json({ message: "Invalid token" });
+    res.status(201).json({ user: null });
     return;
   }
 };

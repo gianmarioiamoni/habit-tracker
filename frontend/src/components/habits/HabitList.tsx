@@ -11,11 +11,12 @@ import HabitListItem from "./HabitListItem";
 function HabitList(): JSX.Element {
     const { setErrorMessage, setInfoMessage } = useMessage();
     const { user } = useAuth();
+    
     // logic for the component
     const {
         habits,
         isLoading,
-        error,
+        isError, 
         newHabit,
         setNewHabit,
         isModalOpen,
@@ -34,10 +35,10 @@ function HabitList(): JSX.Element {
     }, [isLoading, setInfoMessage]);
 
     useEffect(() => {
-        if (error) {
+        if (isError) {
             setErrorMessage("Error while fetching habits.");
         }
-    }, [error, setErrorMessage]);
+    }, [isError, setErrorMessage]);
 
 
     return (
