@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Habit } from "../interfaces/Habit";
+import { Habit } from "../../interfaces/Habit";
 
 export function useDeleteHabit(
   habit: Habit,
@@ -27,4 +27,4 @@ export function useDeleteHabit(
     handleConfirmDelete,
     handleCancelDelete,
   };
-};
+}

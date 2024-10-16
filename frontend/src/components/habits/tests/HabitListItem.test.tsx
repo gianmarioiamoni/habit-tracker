@@ -5,7 +5,7 @@
 
 import { render, screen, fireEvent } from '@testing-library/react';
 import HabitListItem from '../HabitListItem';
-import { useDeleteHabit } from '../../../hooks/useDeleteHabit';
+import { useDeleteHabit } from '../../../hooks/habits/useDeleteHabit';
 
 jest.mock('../../../hooks/useDeleteHabit', () => ({
     useDeleteHabit: jest.fn().mockReturnValue({

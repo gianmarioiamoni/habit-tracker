@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-import { Habit } from "../interfaces/Habit";
-
+import { Habit } from "../../interfaces/Habit";
 
 export function useEditHabit(
   initialHabit: Habit,
@@ -20,7 +19,10 @@ export function useEditHabit(
 
   // Handle start date changes
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedHabit((prev) => ({ ...prev, startDate: new Date(e.target.value) }));
+    setEditedHabit((prev) => ({
+      ...prev,
+      startDate: new Date(e.target.value),
+    }));
   };
 
   // Save and cancel handlers

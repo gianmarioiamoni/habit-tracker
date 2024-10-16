@@ -17,7 +17,7 @@
 // import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import HabitList from '../HabitList';
-import { useHabits } from '../../../hooks/useHabits';
+import { useHabits } from '../../../hooks/habits/useHabits';
 import { useMessage } from '../../../contexts/MessageContext';
 import { useAuth } from '../../../contexts/AuthContext';
 

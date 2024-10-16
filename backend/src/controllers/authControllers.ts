@@ -137,15 +137,11 @@ export const checkAuthStatus = async (
 ): Promise<void> => {
   try {
     const token = req.cookies.authToken;
-    console.log("req.cookies:", req.cookies)
-    console.log("Token1:", token);
 
     if (!token) {
       res.status(201).json({ user: null });
       return;
     }
-
-    console.log("Token2:", token);
 
     const decodedToken = jwt.verify(token, secret) as unknown;
 
@@ -155,8 +151,6 @@ export const checkAuthStatus = async (
       "id" in decodedToken
     ) {
       const decoded = decodedToken as TokenPayload;
-
-      console.log("Decoded token:", decoded);
 
       const user = await User.findById(decoded.id).select("-password");
 

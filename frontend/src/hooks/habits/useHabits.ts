@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { useMessage } from "../contexts/MessageContext";
-import { Habit } from "../interfaces/Habit";
+import { useMessage } from "../../contexts/MessageContext";
+import { Habit } from "../../interfaces/Habit";
 import {
   getHabits,
   createHabit,
   updateHabit,
   deleteHabit,
-} from "../services/habitServices";
+} from "../../services/habitServices";
 
 export function useHabits() {
   const { setSuccessMessage, setErrorMessage } = useMessage();
@@ -19,7 +19,7 @@ export function useHabits() {
     description: "",
     frequency: "",
     startDate: new Date(),
-    progress: []
+    progress: [],
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -29,9 +29,6 @@ export function useHabits() {
     isLoading,
     isError,
   } = useQuery<Habit[], Error>("habits", getHabits);
-  console.log("habits", habits);
-  console.log("isLoading", isLoading);
-  console.log("isError", isError);
 
   // ADD NEW HABIT
   const addHabitMutation = useMutation(createHabit, {

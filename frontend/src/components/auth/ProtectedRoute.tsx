@@ -10,7 +10,6 @@ interface ProtectedRouteProps {
 
 function ProtectedRoute({ children }: ProtectedRouteProps): JSX.Element {
     const { isLoggedIn, loading } = useAuth();
-    console.log("ProtectedRoute isLoggedIn: ", isLoggedIn)
     // if the user is not authenticated, redirect to the login page 
     if (loading) {
         return <></> 

@@ -1,7 +1,7 @@
 import { Habit } from "../../interfaces/Habit";
 import ConfirmationDialog from "../ui/ConfirmationDialog";
-import { useEditHabit } from "../../hooks/useEditHabit";
-import { useDeleteHabit } from "../../hooks/useDeleteHabit";
+import { useEditHabit } from "../../hooks/habits/useEditHabit";
+import { useDeleteHabit } from "../../hooks/habits/useDeleteHabit";
 import { completeHabit } from "../../services/habitServices";
 import { useMessage } from "../../contexts/MessageContext";
 
@@ -63,7 +63,7 @@ export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: Habi
 
     return (
         <li className="bg-white shadow-md rounded-lg p-4 space-y-4 sm:flex sm:justify-between sm:items-start sm:space-y-0">
-            
+
             {/* Habit Details */}
             <div className="sm:flex-1">
                 {isEditing ? (
@@ -72,13 +72,13 @@ export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: Habi
                         handleInputChange={handleInputChange}
                         handleDateChange={handleDateChange}
                     />
-                
+
                 ) : (
                     <HabitListItemShowForm habit={habit} />
                 )}
 
                 {/* Progress History Section */}
-                <HabitListItemProgressHistory habit={habit} handleDeleteProgress={handleDeleteProgress}/>
+                <HabitListItemProgressHistory habit={habit} handleDeleteProgress={handleDeleteProgress} />
 
             </div>
 
@@ -90,7 +90,7 @@ export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: Habi
                 handleCancel={handleCancel}
                 handleSave={handleSave}
                 handleDelete={handleDelete}
-            />   
+            />
 
             {/* Confirmation Dialog */}
             <ConfirmationDialog

@@ -30,7 +30,6 @@ describe("protect middleware", () => {
       { id: mockUser.id },
       process.env.JWT_SECRET as string
     );
-    console.log("token:", token)
     if (!req.headers) {
       req.headers = {};
     } else {
