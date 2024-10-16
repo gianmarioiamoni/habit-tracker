@@ -10,10 +10,13 @@ import { useMessage } from '../../contexts/MessageContext';
 function Login(): JSX.Element {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [validationErrors, setValidationErrors] = useState<{ email?: string; password?: string }>({}); 
+    const [validationErrors, setValidationErrors] = useState<{ email?: string; password?: string }>({});
+    const [loginError, setLoginError] = useState<string | null>(null);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const navigate = useNavigate();
-    const { login: loginContext } = useAuth();
+
+    const { login: loginContext, user } = useAuth();
 
     const { setSuccessMessage, setErrorMessage } = useMessage();
 
@@ -25,6 +28,19 @@ function Login(): JSX.Element {
         }
     }, [validationErrors, setErrorMessage]);
 
+    // Show login error and success message
+    useEffect(() => {
+        if (loginError) {
+            setErrorMessage("Invalid email or password.");
+        }
+    }, [loginError, setErrorMessage]);
+
+    useEffect(() => {
+        if (isSuccess) {
+            setSuccessMessage(`Welcome back to Habit Tracker` + (user?.name ? `, ${user?.name}!` : '!'));
+        }
+    }, [isSuccess, setSuccessMessage, user?.name]);
+
     // Mutation to send login request
     const mutation = useMutation(async () => {
         console.log('email', email, 'password', password);
@@ -33,11 +49,14 @@ function Login(): JSX.Element {
     }, {
         onSuccess: (data) => {
             navigate('/dashboard');
-            setSuccessMessage("Welcome to Habit Tracker!");
+            setLoginError(null);
+            setIsSuccess(true);
+            // setSuccessMessage("Welcome to Habit Tracker!");
         },
         onError: (error: any) => {
             console.error(error);
-            setErrorMessage("Invalid email or password");
+            setLoginError("Invalid email or password");
+            setIsSuccess(false);
         }
     });
 

@@ -14,12 +14,12 @@ interface UserType {
 // Context definition
 interface AuthContextType {
     user: UserType | null;
-    error: string | null;
     isLoggedIn: boolean;
     login: (userData: { email: string, password: string }) => any;
     signup: (userData: { name: string, email: string, password: string }) => any;
     logout: () => void;
     checkAuthStatus: () => void;
+    loading: boolean;
 }
 
 // Context creation 
@@ -31,21 +31,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     // define user of type UserType as state and set it to an empty user
     const [user, setUser] = useState<UserType | null>({ id: 0, name: '', email: '' });
-    const [error, setError] = useState<string | null>(null); 
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         // Call API to verify auth status 
         const verifyLogin = async () => {
+            setLoading(true);
             const { user } = await checkAuthStatusService();
             if (user) {
-                setIsLoggedIn(true);  // L'utente è loggato
-                setUser(user);        // Imposta le informazioni dell'utente
-                setError(null);       // Nessun errore
+                setIsLoggedIn(true);  
+                setUser(user);        
             } else {
-                setIsLoggedIn(false); // L'utente non è loggato
+                setIsLoggedIn(false); 
                 setUser(null);
-                // setError(error);      // Memorizza l'errore
             }
+            setLoading(false);
         };
 
         verifyLogin();
@@ -93,15 +93,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     const checkAuthStatus = async () => {
         try {
             const data = await checkAuthStatusService(); 
-            setUser(data.user);
-            setIsLoggedIn(true);
-        } catch {
-            setIsLoggedIn(false);
+            console.log("checkAuthStatus data:", data);
+        } catch (error) {
+            console.log("error during checkAuthStatus:", error);
+            throw error;
         }
     };
 
     return (
-        <AuthContext.Provider value={{ user, error, isLoggedIn, login, signup, logout, checkAuthStatus }}>
+        <AuthContext.Provider value={{ user, isLoggedIn, loading, login, signup, logout, checkAuthStatus }}>
             {children}
         </AuthContext.Provider>
     );

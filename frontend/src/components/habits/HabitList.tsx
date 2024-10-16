@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useMessage } from "../../contexts/MessageContext";
+// import { useEffect } from "react";
+// import { useMessage } from "../../contexts/MessageContext";
 import { useAuth } from "../../contexts/AuthContext";
 
 import { useHabits } from "../../hooks/useHabits";
@@ -9,14 +9,14 @@ import HabitListItem from "./HabitListItem";
 
 
 function HabitList(): JSX.Element {
-    const { setErrorMessage, setInfoMessage } = useMessage();
+    // const { setErrorMessage, setInfoMessage } = useMessage();
     const { user } = useAuth();
     
     // logic for the component
     const {
         habits,
-        isLoading,
-        isError, 
+        // isLoading,
+        // isError, 
         newHabit,
         setNewHabit,
         isModalOpen,
@@ -28,17 +28,17 @@ function HabitList(): JSX.Element {
     
 
     // useEffect to show messages after the rendering
-    useEffect(() => {
-        if (isLoading) {
-            setInfoMessage("Loading dashboard...");
-        }
-    }, [isLoading, setInfoMessage]);
+    // useEffect(() => {
+    //     if (isLoading) {
+    //         setInfoMessage("Loading dashboard...");
+    //     }
+    // }, [isLoading, setInfoMessage]);
 
-    useEffect(() => {
-        if (isError) {
-            setErrorMessage("Error while fetching habits.");
-        }
-    }, [isError, setErrorMessage]);
+    // useEffect(() => {
+    //     if (isError) {
+    //         setErrorMessage("Error while fetching habits.");
+    //     }
+    // }, [isError, setErrorMessage]);
 
 
     return (

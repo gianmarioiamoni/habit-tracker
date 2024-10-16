@@ -53,7 +53,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -106,7 +106,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "strict",
+      domain: process.env.COOKIE_DOMAIN || "localhost",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -134,7 +136,6 @@ export const checkAuthStatus = async (
   res: Response
 ): Promise<void> => {
   try {
-    // const token = req.cookies["authToken"];
     const token = req.cookies.authToken;
     console.log("req.cookies:", req.cookies)
     console.log("Token1:", token);

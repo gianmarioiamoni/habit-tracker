@@ -12,7 +12,7 @@ export const protect = async (
   // Check if token exists in cookies
   if (req.cookies && req.cookies.authToken) {
     try {
-      // Retieve the token from cookies
+      // Retrieve the token from cookies
       token = req.cookies.authToken;
 
       // Decode the JWT token
@@ -20,7 +20,6 @@ export const protect = async (
         token,
         process.env.JWT_SECRET as string
       ) as JwtPayload;
-
       // Retrieve the user from the database and add it to the request object
       req.user = await User.findById(decoded.id).select("-password");
 
