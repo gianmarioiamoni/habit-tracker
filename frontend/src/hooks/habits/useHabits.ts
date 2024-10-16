@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { useMessage } from "../../contexts/MessageContext";
+import { useToast} from "../../contexts/ToastContext";
 import { Habit } from "../../interfaces/Habit";
 import {
   getHabits,
@@ -10,7 +10,7 @@ import {
 } from "../../services/habitServices";
 
 export function useHabits() {
-  const { setSuccessMessage, setErrorMessage } = useMessage();
+  const { showError, showSuccess } = useToast();
   const queryClient = useQueryClient();
 
   const [newHabit, setNewHabit] = useState<Habit>({
@@ -34,11 +34,11 @@ export function useHabits() {
   const addHabitMutation = useMutation(createHabit, {
     onSuccess: () => {
       queryClient.invalidateQueries("habits");
-      setSuccessMessage("Habit added successfully!");
+      showSuccess("Habit added successfully!");
       setIsModalOpen(false);
     },
     onError: (err: any) => {
-      setErrorMessage(err.message);
+      showError(err.message);
     },
   });
 
@@ -51,10 +51,10 @@ export function useHabits() {
   const updateHabitMutation = useMutation(updateHabit, {
     onSuccess: () => {
       queryClient.invalidateQueries("habits");
-      setSuccessMessage("Habit updated successfully!");
+      showSuccess("Habit updated successfully!");
     },
     onError: (err: any) => {
-      setErrorMessage(err.message);
+      showError(err.message);
     },
   });
 
@@ -66,10 +66,10 @@ export function useHabits() {
   const deleteMutation = useMutation(deleteHabit, {
     onSuccess: () => {
       queryClient.invalidateQueries("habits");
-      setSuccessMessage("Habit deleted successfully!");
+      showSuccess("Habit deleted successfully!");
     },
     onError: (err: any) => {
-      setErrorMessage(err.message);
+      showError(err.message);
     },
   });
 

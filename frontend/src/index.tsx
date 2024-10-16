@@ -4,8 +4,11 @@ import './index.css';
 import App from './App';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import 'react-toastify/dist/ReactToastify.css';
+
 import { AuthProvider } from './contexts/AuthContext';
 import { MessageProvider } from './contexts/MessageContext';
+import { ToastProvider } from './contexts/ToastContext';
 
 const queryClient = new QueryClient();
 
@@ -16,9 +19,11 @@ root.render(
   <React.StrictMode>
     <AuthProvider>
       <MessageProvider>
+        <ToastProvider>
         <QueryClientProvider client={queryClient}>
           <App />
-        </QueryClientProvider>
+          </QueryClientProvider>
+        </ToastProvider>
       </MessageProvider>
     </AuthProvider>
   </React.StrictMode>

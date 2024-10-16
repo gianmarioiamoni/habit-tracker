@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
-import { useMessage } from '../contexts/MessageContext';
+import { useToast } from '../contexts/ToastContext';
 
 function Navbar(): JSX.Element {
     const { isLoggedIn } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { logout: logoutContext } = useAuth();
-    const { setSuccessMessage } = useMessage();
+    const { showSuccess } = useToast();
 
     const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ function Navbar(): JSX.Element {
     const handleLogout = () => {
         logoutContext();
         navigate('/login');  
-        setSuccessMessage("Logout successful!!!");
+        showSuccess("Logout successful!");
     };
 
     return (

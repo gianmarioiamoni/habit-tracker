@@ -3,7 +3,7 @@ import ConfirmationDialog from "../ui/ConfirmationDialog";
 import { useEditHabit } from "../../hooks/habits/useEditHabit";
 import { useDeleteHabit } from "../../hooks/habits/useDeleteHabit";
 import { completeHabit } from "../../services/habitServices";
-import { useMessage } from "../../contexts/MessageContext";
+import { useToast} from "../../contexts/ToastContext";
 
 import HabitListItemEditForm from "./elements/HabitListItemEditForm";
 import HabitListItemShowForm from "./elements/HabitListItemShowForm";
@@ -18,7 +18,7 @@ interface HabitListItemProps {
 }
 
 export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: HabitListItemProps): JSX.Element {
-    const { setErrorMessage } = useMessage();
+    const { showError } = useToast();
 
     // EDIT
     const {
@@ -51,7 +51,7 @@ export default function HabitListItem({ habit, onSaveEdit, onDeleteHabit }: Habi
             // update habit on HabitList
             onSaveEdit(updatedHabit);
         } catch (error) {
-            setErrorMessage("Error in completing habit");
+            showError("Error in completing habit");
         }
     };
 

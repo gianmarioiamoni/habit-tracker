@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
 
     const checkAuthStatus = async () => {
         try {
-            const data = await checkAuthStatusService(); 
+            await checkAuthStatusService(); 
         } catch (error) {
             console.log("error during checkAuthStatus:", error);
             throw error;

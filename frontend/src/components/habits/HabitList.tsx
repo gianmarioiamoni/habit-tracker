@@ -1,6 +1,7 @@
-import { useEffect } from "react";
-import { useMessage } from "../../contexts/MessageContext";
+// import { useEffect } from "react";
+
 import { useAuth } from "../../contexts/AuthContext";
+import { useToast} from "../../contexts/ToastContext";
 
 import { useHabits } from "../../hooks/habits/useHabits";
 
@@ -9,7 +10,7 @@ import HabitListItem from "./HabitListItem";
 
 
 function HabitList(): JSX.Element {
-    const { setErrorMessage, setInfoMessage } = useMessage();
+    const { showInfo, showError } = useToast();
     const { user } = useAuth();
 
     // logic for the component
@@ -26,19 +27,8 @@ function HabitList(): JSX.Element {
         handleDeleteHabit,
     } = useHabits();
 
-
-    // useEffect to show messages after the rendering
-    useEffect(() => {
-        if (isLoading) {
-            setInfoMessage("Loading habits...");
-        }
-    }, [isLoading, setInfoMessage]);
-    useEffect(() => {
-        if (isError) {
-            setErrorMessage("Error while fetching habits.");
-        }
-    }, [isError, setErrorMessage]);
-
+    isLoading && showInfo("Loading habits...");
+    isError && showError("Error while fetching habits.");
 
     return (
         <div className="container mx-auto px-24 py-4">

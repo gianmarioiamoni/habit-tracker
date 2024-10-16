@@ -3,14 +3,14 @@ import { useQuery } from 'react-query';
 import { Bar } from 'react-chartjs-2';
 import { Chart, ChartOptions, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { getDashboardData } from '../../services/habitServices';
-import { useMessage } from '../../contexts/MessageContext';
+import { useToast} from '../../contexts/ToastContext';
 import 'chart.js/auto';
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function HabitsDashboard(): JSX.Element {
     const [timeFilter, setTimeFilter] = useState('7'); // Default filter: Last 7 days
-    const { setErrorMessage, setInfoMessage } = useMessage();
+    const { showInfo, showError } = useToast();
 
     // Fetch data based on the selected time filter
     const { data, error, isLoading } = useQuery(['dashboardData', timeFilter], () => getDashboardData(timeFilter));
@@ -22,15 +22,15 @@ export default function HabitsDashboard(): JSX.Element {
     // useEffects to show messages after the rendering
     useEffect(() => {
         if (isLoading) {
-            setInfoMessage("Loading dashboard...");
+            showInfo("Loading dashboard...");
         }
-    }, [isLoading, setInfoMessage]);
+    }, [isLoading, showInfo]);
 
     useEffect(() => {
         if (error) {
-            setErrorMessage("An error occurred while fetching dashboard data: " + error);
+            showError("An error occurred while fetching dashboard data: " + error);
         }
-    }, [error, setErrorMessage]);
+    }, [error, showError]);
 
     // Verify if data is available and if there is the property `mostFrequentHabit`
     if (!data || !data.mostFrequentHabit) {

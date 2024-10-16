@@ -1,4 +1,4 @@
-import {useLogin} from '../../hooks/auth/useLogin';
+import { useLogin } from '../../hooks/auth/useLogin';
 
 function Login(): JSX.Element {
     const {
@@ -8,7 +8,6 @@ function Login(): JSX.Element {
         setPassword,
         handleSubmit,
         } = useLogin();
-
     
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -44,6 +43,7 @@ function Login(): JSX.Element {
                         className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         Login
                     </button>
+                    
                 </form>
                 <p className="mt-4 text-center text-sm text-gray-600">
                     Don't have an account? <a href="/signup" className="text-indigo-600 hover:text-indigo-500">Sign up</a>

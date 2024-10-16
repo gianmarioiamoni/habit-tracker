@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import validator from "validator";
 
 import { useAuth } from "../../contexts/AuthContext";
-import { useMessage } from "../../contexts/MessageContext";
+import { useToast } from "../../contexts/ToastContext";
 
 
 export function useLogin() {
@@ -22,30 +22,31 @@ export function useLogin() {
 
     const { login: loginContext, user } = useAuth();
 
-    const { setSuccessMessage, setErrorMessage } = useMessage();
+    const { showError, showSuccess } = useToast();
 
     // Show validation errors if any
     useEffect(() => {
         if (Object.keys(validationErrors).length > 0) {
-            validationErrors.email && setErrorMessage(validationErrors.email);
-            validationErrors.password && setErrorMessage(validationErrors.password);
+            validationErrors.email && showError(validationErrors.email);
+            validationErrors.password && showError(validationErrors.password);
         }
-    }, [validationErrors, setErrorMessage]);
+    }, [validationErrors, showError]);
 
     // Show login error and success message
     useEffect(() => {
         if (loginError) {
-            setErrorMessage("Invalid email or password.");
+            showError("Invalid email or password.")
+
         }
-    }, [loginError, setErrorMessage]);
+    }, [loginError, showError]);
 
     useEffect(() => {
         if (isSuccess) {
-            setSuccessMessage(
+            showSuccess(
                 `Welcome back to Habit Tracker` + (user?.name ? `, ${user?.name}!` : "!")
             );
         }
-    }, [isSuccess, setSuccessMessage, user?.name]);
+    }, [isSuccess, showSuccess, user?.name]);
 
     // Mutation to send login request
     const mutation = useMutation(
@@ -58,7 +59,6 @@ export function useLogin() {
                 navigate("/dashboard");
                 setLoginError(null);
                 setIsSuccess(true);
-                // setSuccessMessage("Welcome to Habit Tracker!");
             },
             onError: (error: any) => {
                 console.error(error);

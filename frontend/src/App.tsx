@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Signup from './components/auth/Signup';
@@ -7,15 +6,10 @@ import HabitList from './components/habits/HabitList';
 import HabitsDashbord from './components/habits/HabitsDasboard'; 
 import ProtectedRoute from '../src/components/auth/ProtectedRoute';
 import Navbar from './components/Navbar';
-import MessageToast from './components/ui/MessageToast';
 import Footer from './components/ui/Footer';
-
-import { useMessage } from "./contexts/MessageContext"
 
 
 function App(): JSX.Element {
-  const { showToast, message } = useMessage();
-
 
   return (
     <>
@@ -24,8 +18,6 @@ function App(): JSX.Element {
           {/* Navbar */}
           <Navbar />
           <div className="flex-grow">
-            {/* Message Area */}
-            <MessageToast message={message} showToast={showToast} />
 
             {/* Routes */}
             <Routes>

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 
 import { useAuth } from '../../contexts/AuthContext';
-import { useMessage } from '../../contexts/MessageContext'; 
+import { useToast} from '../../contexts/ToastContext';
 
 function Signup(): JSX.Element {
     const [name, setName] = useState('');
@@ -13,34 +13,35 @@ function Signup(): JSX.Element {
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
+
     const { signup: signupContext } = useAuth(); 
-    const { setErrorMessage, setSuccessMessage } = useMessage();
+    const { showSuccess, showError } = useToast();
 
     const { mutate, isLoading, error } = useMutation(signupContext, {
         onSuccess: (data) => {
-            setSuccessMessage("User signed up successfully!");
+            showSuccess("User signed up successfully!");
             navigate('/dashboard');
         },
         onError: (error: any) => {
             console.error(error);
-            setErrorMessage("An error occurred during signup");
+            showError("An error occurred during signup");
         }
     });
 
     if (error instanceof Error) {
-        setErrorMessage("An error occurred during signup");
+        showError("An error occurred during signup");
     }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validator.isEmail(email)) {
-            setErrorMessage("Invalid email format");
+            showError("Invalid email format");
             return;
         }
 
         if (!validator.isLength(password, { min: 6 })) {
-            setErrorMessage("Password must be at least 6 characters");
+            showError("Password must be at least 6 characters");
             return;
         }
 
