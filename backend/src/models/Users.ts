@@ -6,6 +6,7 @@ export interface IUser extends Document {
   name: string,
   email: string;
   password: string;
+  iv: string;
   comparePassword(enteredPassword: string): Promise<boolean>;
 }
 
@@ -24,6 +25,7 @@ const userSchema: Schema = new Schema({
     type: String,
     required: true,
   },
+  iv: { type: String, required: true },
 });
 
 // Method to confirm password

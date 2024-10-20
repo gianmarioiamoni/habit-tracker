@@ -1,9 +1,11 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import User from "../models/Users";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import validator from "validator";
+
+import { encryptDataWithIV, decryptData } from "../utils/crypto";
+import { sanitizeEmail } from "../utils/normalize";
 
 dotenv.config();
 
@@ -14,14 +16,17 @@ const generateToken = (user: any): string => {
   });
 };
 
+
 // @desc Register a new user
 // @route POST /api/auth/signup
 // @access Public
 export const signup = async (req: Request, res: Response): Promise<void> => {
   const { name, email, password } = req.body;
 
-  // Sanificazione input
-  const sanitizedEmail = validator.normalizeEmail(email) || "";
+  console.log("Signup - Email before sanitization:", email);
+  const sanitizedEmail = sanitizeEmail(email);
+  console.log("Signup - Email after sanitization:", sanitizedEmail);
+
   const sanitizedName = validator.escape(name);
 
   // Validazione input
@@ -35,18 +40,24 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
+  // Encrypt sensible data using the same function as in login
+  const { encryptedEmail, iv } = encryptDataWithIV(sanitizedEmail);
+  console.log("Signup - Encrypted email:", encryptedEmail);
+
   try {
-    const user = await User.findOne({ email: sanitizedEmail });
+    // Cerca l'utente usando l'email criptata
+    const user = await User.findOne({ email: encryptedEmail });
+    console.log("Signup - User:", user);
     if (user) {
       res.status(401).json({ message: "User already exists" });
       return;
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       name: sanitizedName,
-      email: sanitizedEmail,
-      password: hashedPassword,
+      email: encryptedEmail, // Salva l'email criptata
+      iv, // Salva l'IV separatamente
+      password
     });
 
     const token = generateToken(newUser);
@@ -68,41 +79,65 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+
 // @desc Login a user
 // @route POST /api/auth/login
 // @access Public
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
-  const sanitizedEmail =
-    validator.normalizeEmail(email, {
-      gmail_remove_dots: false, // Mantiene i punti nei nomi utente Gmail
-      gmail_remove_subaddress: false, // Mantiene i subaddress negli indirizzi Gmail
-      gmail_convert_googlemaildotcom: true, // Converte @googlemail.com in @gmail.com
-      all_lowercase: true, // Converte in minuscolo (mantenuto per evitare discrepanze)
-    }) || "";
+  console.log("Login - Email before sanitization:", email);
 
-
+  const sanitizedEmail = sanitizeEmail(email);
+  
+  console.log("Login - Email after sanitization:", sanitizedEmail);
+  
+  // Verifica formato email
   if (!validator.isEmail(sanitizedEmail)) {
     res.status(400).json({ message: "Invalid email format" });
+    console.log("Invalid email format:", sanitizedEmail);
     return;
   }
 
   try {
-    const user = await User.findOne({ email: sanitizedEmail });
+    // Cerca l'utente con una email criptata
+    const users = await User.find(); // Ottieni tutti gli utenti
+
+    console.log("Users:", users);
+
+    let user = null;
+
+    for (const u of users) {
+      // Usa l'IV dal database dell'utente (u.iv)
+      const { encryptedEmail } = encryptDataWithIV(sanitizedEmail, u.iv);
+      if (encryptedEmail === u.email) {
+        user = u;
+        break;
+      }
+    }
+
+    console.log("User:", user);
+
     if (!user) {
       res.status(401).json({ message: "Invalid email or password" });
+      console.log("User not found:", sanitizedEmail);
       return;
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Verifica la password
+    const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       res.status(401).json({ message: "Invalid email or password" });
+      console.log("Password invalid:", password);
       return;
     }
 
+    // Genera il token di autenticazione
     const token = generateToken(user);
 
+    console.log("Generated token:", token);
+
+    // Imposta il cookie
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -118,9 +153,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     return;
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+    console.log("Server error:", error);
     return;
   }
 };
+
 const secret = process.env.JWT_SECRET || "MyLocalJWTSecret";
 if (!secret) {
   throw new Error("JWT_SECRET environment variable is not set");

@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 
 import validator from 'validator';
 
+import { sanitizeEmail } from '../../utils/normalize';
+
 import { useAuth } from '../../contexts/AuthContext';
-import { useToast} from '../../contexts/ToastContext';
+import { useToast } from '../../contexts/ToastContext';
+
 
 function Signup(): JSX.Element {
     const [name, setName] = useState('');
@@ -45,7 +48,7 @@ function Signup(): JSX.Element {
             return;
         }
 
-        const sanitizedEmail = validator.normalizeEmail(email) || '';
+        const sanitizedEmail = sanitizeEmail(email);
         const sanitizedName = validator.escape(name);
 
         mutate({ name: sanitizedName, email: sanitizedEmail, password });
