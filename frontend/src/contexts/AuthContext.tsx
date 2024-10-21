@@ -15,7 +15,7 @@ interface UserType {
 interface AuthContextType {
     user: UserType | null;
     isLoggedIn: boolean;
-    login: (userData: { email: string, password: string }) => any;
+    login: (userData: { email: string, password: string, captchaToken: string | null                 })        => any;
     signup: (userData: { name: string, email: string, password: string }) => any;
     logout: () => void;
     checkAuthStatus: () => void;
@@ -52,14 +52,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     }, []);
 
 
-    const login = async (userData: { email: string, password: string }) => {
+    const login = async (userData: { email: string, password: string, captchaToken: string | null }) => {
         try {
             const data = await loginService(userData);
+            console.log("authContext - login() - data:", data);
             setUser({ name: data.name, email: data.email, id: data._id });
             setIsLoggedIn(true);
             return data;
         } catch (error) {
-            console.log("Error during login:", error);
+            console.error("authContext - login() - error:", error);
             throw error;
         }
 

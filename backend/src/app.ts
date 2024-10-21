@@ -9,6 +9,7 @@ import setupSwagger from "./swagger";
 import authRouter from "./routes/authRoutes";
 import habitRouter from "./routes/habitRoutes";
 
+
 const SERVER_URL = process.env.SERVER_URL || "http://localhost:5000"; 
 
 dotenv.config();

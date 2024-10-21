@@ -18,6 +18,9 @@ export function useLogin() {
     const [loginError, setLoginError] = useState<string | null>(null);
     const [isSuccess, setIsSuccess] = useState(false);
 
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+    const [showCaptcha, setShowCaptcha] = useState(false);
+
     const navigate = useNavigate();
 
     const { login: loginContext, user } = useAuth();
@@ -35,7 +38,8 @@ export function useLogin() {
     // Show login error and success message
     useEffect(() => {
         if (loginError) {
-            showError("Invalid email or password.")
+            console.log("showError(loginError):", loginError);
+            showError(loginError);
 
         }
     }, [loginError, showError]);
@@ -51,7 +55,7 @@ export function useLogin() {
     // Mutation to send login request
     const mutation = useMutation(
         async () => {
-            const response = await loginContext({ email, password });
+            const response = await loginContext({ email, password, captchaToken });
             return response;
         },
         {
@@ -61,12 +65,25 @@ export function useLogin() {
                 setIsSuccess(true);
             },
             onError: (error: any) => {
-                console.error(error);
-                setLoginError("Invalid email or password");
+                // if (error?.response?.status === 439) { // 439 = show CAPTCHA
+                //     setShowCaptcha(true); // Show CAPTCHA after 3 attempts
+                //     return;
+                // }
+                if (error?.status === 429) { // 429 = Too many requests
+                    setLoginError(error.response.data);
+                    setIsSuccess(false);
+                    return;
+                }
+
+                setLoginError(error?.response?.data.message);
                 setIsSuccess(false);
             },
         }
     );
+
+    const onCaptchaVerify = (token: string | null) => {
+      setCaptchaToken(token);
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -106,5 +123,7 @@ export function useLogin() {
         handleSubmit,
         loginError,
         isSuccess,
+        showCaptcha,
+        onCaptchaVerify
     }
 }

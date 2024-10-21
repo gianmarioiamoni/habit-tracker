@@ -1,4 +1,9 @@
+import HCaptcha from '@hcaptcha/react-hcaptcha';
+
 import { useLogin } from '../../hooks/auth/useLogin';
+import dotenv from 'dotenv';
+
+// dotenv.config();
 
 function Login(): JSX.Element {
     const {
@@ -7,7 +12,14 @@ function Login(): JSX.Element {
         password,
         setPassword,
         handleSubmit,
-        } = useLogin();
+        showCaptcha,
+        onCaptchaVerify
+
+    } = useLogin();
+    
+    if (!process.env.REACT_APP_HCAPTCHA_SITE_KEY) {
+        throw new Error('REACT_APP_HCAPTCHA_SITE_KEY environment variable is not set');
+    }
     
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -38,6 +50,14 @@ function Login(): JSX.Element {
                             required
                         />
                     </div>
+
+                    {showCaptcha && (
+                        <HCaptcha
+                            sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY}
+                            onVerify={onCaptchaVerify}
+                        />
+                    )}
+
                     <button
                         type="submit"
                         className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">

@@ -14,12 +14,12 @@ export const signup = async (userData: {
   return response.data;
 };
 
-export const login = async (userData: { email: string; password: string }) => {
+export const login = async (userData: { email: string; password: string; captchaToken: string | null }) => {
     const response = await axios.post(`${API_URL}/login`, userData, {
       withCredentials: true,
     });
     return response.data;
-};
+};  
 
 export const checkAuthStatus = async () => {
   try {

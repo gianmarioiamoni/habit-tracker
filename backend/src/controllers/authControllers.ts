@@ -7,6 +7,10 @@ import validator from "validator";
 import { encryptDataWithIV, decryptData } from "../utils/crypto";
 import { sanitizeEmail } from "../utils/normalize";
 
+import { validateCaptcha } from "../utils/captcha";
+
+import redisClient from "../redis/redis";
+
 dotenv.config();
 
 // Function to generate a JWT token
@@ -23,13 +27,10 @@ const generateToken = (user: any): string => {
 export const signup = async (req: Request, res: Response): Promise<void> => {
   const { name, email, password } = req.body;
 
-  console.log("Signup - Email before sanitization:", email);
   const sanitizedEmail = sanitizeEmail(email);
-  console.log("Signup - Email after sanitization:", sanitizedEmail);
-
   const sanitizedName = validator.escape(name);
 
-  // Validazione input
+  // Input validation
   if (!validator.isEmail(sanitizedEmail)) {
     res.status(400).json({ message: "Invalid email format" });
     return;
@@ -45,7 +46,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
   console.log("Signup - Encrypted email:", encryptedEmail);
 
   try {
-    // Cerca l'utente usando l'email criptata
+    // Search for the user by using the encrypted email
     const user = await User.findOne({ email: encryptedEmail });
     console.log("Signup - User:", user);
     if (user) {
@@ -55,8 +56,8 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 
     const newUser = await User.create({
       name: sanitizedName,
-      email: encryptedEmail, // Salva l'email criptata
-      iv, // Salva l'IV separatamente
+      email: encryptedEmail, 
+      iv, 
       password
     });
 
@@ -84,31 +85,53 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 // @route POST /api/auth/login
 // @access Public
 export const login = async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
-
-  console.log("Login - Email before sanitization:", email);
+  const { email, password, captchaToken } = req.body;
 
   const sanitizedEmail = sanitizeEmail(email);
+
+  const redisKey = `login_attempts_${email}`;
+
+  const attempts = await redisClient.get(redisKey);
+  const attemptCount = attempts ? parseInt(attempts) : 0;
+
+  console.log("Login - attemptCount:", attemptCount);
+  //////////////////////
+  // CAPTCHA
+  // Verify if the 3 attempts limit has been reached
+  // if (attemptCount >= 3 && captchaToken) {
+  // if (attemptCount == 2) {
+  //   res.status(439).json({ message: "CAPTCHA validation required" });
+  //   return;
+  // }
+  // if (captchaToken) {
+  //   console.log("CaptchaToken is NOT null");
+  //   const isCaptchaValid = await validateCaptcha(captchaToken);
+  //   console.log("Login - isCaptchaValid:", isCaptchaValid);
+  //   if (!isCaptchaValid) {
+  //     res.status(400).json({ message: "Invalid CAPTCHA" });
+  //   }
+  //   return;
+  // }
+////////////////////////////////////
   
-  console.log("Login - Email after sanitization:", sanitizedEmail);
-  
-  // Verifica formato email
+  // Verify email format
   if (!validator.isEmail(sanitizedEmail)) {
+    // Increase failed attempts in case of error
+    await redisClient.incr(redisKey);
+    await redisClient.expire(redisKey, 60 * 60); // expire after 1 hour
+
     res.status(400).json({ message: "Invalid email format" });
     console.log("Invalid email format:", sanitizedEmail);
     return;
   }
 
   try {
-    // Cerca l'utente con una email criptata
-    const users = await User.find(); // Ottieni tutti gli utenti
-
-    console.log("Users:", users);
+    // Search for the user with the excrypted email
+    const users = await User.find();
 
     let user = null;
 
     for (const u of users) {
-      // Usa l'IV dal database dell'utente (u.iv)
       const { encryptedEmail } = encryptDataWithIV(sanitizedEmail, u.iv);
       if (encryptedEmail === u.email) {
         user = u;
@@ -116,28 +139,32 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       }
     }
 
-    console.log("User:", user);
-
     if (!user) {
+      // Increase failed attempts in case of error
+      await redisClient.incr(redisKey);
+      await redisClient.expire(redisKey, 60 * 60); // expire after 1 hour 
+
       res.status(401).json({ message: "Invalid email or password" });
-      console.log("User not found:", sanitizedEmail);
       return;
     }
 
-    // Verifica la password
+    // Password verification 
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
+      // Increase failed attempts in case of error
+      await redisClient.incr(redisKey);
+      await redisClient.expire(redisKey, 60 * 60); // expire after 1 hour
+    
       res.status(401).json({ message: "Invalid email or password" });
-      console.log("Password invalid:", password);
       return;
     }
 
-    // Genera il token di autenticazione
+    // Generate authentication token 
     const token = generateToken(user);
 
     console.log("Generated token:", token);
 
-    // Imposta il cookie
+    // Cookie settings
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -146,6 +173,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    // the user is valid, reset failed attempts
+    await redisClient.del(redisKey);
 
     res
       .status(200)
