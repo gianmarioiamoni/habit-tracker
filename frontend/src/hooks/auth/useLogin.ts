@@ -65,10 +65,11 @@ export function useLogin() {
                 setIsSuccess(true);
             },
             onError: (error: any) => {
-                // if (error?.response?.status === 439) { // 439 = show CAPTCHA
-                //     setShowCaptcha(true); // Show CAPTCHA after 3 attempts
-                //     return;
-                // }
+                if (error?.status === 439) { // 439 = show CAPTCHA
+                  setShowCaptcha(true); // Show CAPTCHA after 3 attempts
+                  setIsSuccess(false);
+                  return;
+                }
                 if (error?.status === 429) { // 429 = Too many requests
                     setLoginError(error.response.data);
                     setIsSuccess(false);

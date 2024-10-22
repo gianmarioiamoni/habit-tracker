@@ -55,7 +55,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     const login = async (userData: { email: string, password: string, captchaToken: string | null }) => {
         try {
             const data = await loginService(userData);
-            console.log("authContext - login() - data:", data);
             setUser({ name: data.name, email: data.email, id: data._id });
             setIsLoggedIn(true);
             return data;

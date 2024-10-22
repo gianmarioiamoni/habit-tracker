@@ -1,9 +1,6 @@
-import HCaptcha from '@hcaptcha/react-hcaptcha';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 import { useLogin } from '../../hooks/auth/useLogin';
-import dotenv from 'dotenv';
-
-// dotenv.config();
 
 function Login(): JSX.Element {
     const {
@@ -17,9 +14,6 @@ function Login(): JSX.Element {
 
     } = useLogin();
     
-    if (!process.env.REACT_APP_HCAPTCHA_SITE_KEY) {
-        throw new Error('REACT_APP_HCAPTCHA_SITE_KEY environment variable is not set');
-    }
     
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -51,10 +45,11 @@ function Login(): JSX.Element {
                         />
                     </div>
 
+                    {/* reCAPTCHA component */}
                     {showCaptcha && (
-                        <HCaptcha
-                            sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY}
-                            onVerify={onCaptchaVerify}
+                        <ReCAPTCHA
+                            sitekey="6LdsSWgqAAAAACKDqqfAwtSusM-G0PdchvLngQ9n" 
+                            onChange={onCaptchaVerify} // Callback function to handle reCAPTCHA verification
                         />
                     )}
 

@@ -95,23 +95,25 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   const attemptCount = attempts ? parseInt(attempts) : 0;
 
   console.log("Login - attemptCount:", attemptCount);
+  captchaToken && console.log("CaptchaToken:", captchaToken); 
   //////////////////////
   // CAPTCHA
-  // Verify if the 3 attempts limit has been reached
-  // if (attemptCount >= 3 && captchaToken) {
-  // if (attemptCount == 2) {
-  //   res.status(439).json({ message: "CAPTCHA validation required" });
-  //   return;
-  // }
-  // if (captchaToken) {
-  //   console.log("CaptchaToken is NOT null");
-  //   const isCaptchaValid = await validateCaptcha(captchaToken);
-  //   console.log("Login - isCaptchaValid:", isCaptchaValid);
-  //   if (!isCaptchaValid) {
-  //     res.status(400).json({ message: "Invalid CAPTCHA" });
-  //   }
-  //   return;
-  // }
+  if (!captchaToken && attemptCount == 2) {
+    await redisClient.incr(redisKey);
+    await redisClient.expire(redisKey, 60 * 60); // expire after 1 hour
+    res.status(439).json({ message: "CAPTCHA validation required" });
+    return;
+  }
+  if (captchaToken) {
+    console.log("authController - login() - validate Captcha");
+    const isCaptchaValid = await validateCaptcha(captchaToken);
+    if (!isCaptchaValid) {
+      await redisClient.incr(redisKey);
+      await redisClient.expire(redisKey, 60 * 60); // expire after 1 hour
+      res.status(400).json({ message: "Invalid CAPTCHA" });
+      return;
+    }
+  }
 ////////////////////////////////////
   
   // Verify email format
