@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+
+
 import {
     login as loginService,
     signup as signupService,
     logout as logoutService,
-    checkAuthStatus as checkAuthStatusService
+    checkAuthStatus as checkAuthStatusService,
+    loginWithGoogle as loginWithGoogleService
 } from '../services/authServices';
 
 interface UserType {
@@ -14,12 +17,14 @@ interface UserType {
 // Context definition
 interface AuthContextType {
     user: UserType | null;
+    setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
     isLoggedIn: boolean;
-    login: (userData: { email: string, password: string, captchaToken: string | null                 })        => any;
+    login: (userData: { email: string, password: string, captchaToken: string | null}) => any;
     signup: (userData: { name: string, email: string, password: string }) => any;
     logout: () => void;
     checkAuthStatus: () => void;
     loading: boolean;
+    loginWithGoogle: (tokenResponse: any) => any;
 }
 
 // Context creation 
@@ -99,8 +104,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
         }
     };
 
+    // Google login
+    const loginWithGoogle = async (tokenResponse: any) => {
+        try {
+            const data = await loginWithGoogleService(tokenResponse.credential);
+            setUser({ name: data.name, email: data.email, id: data._id });
+            setIsLoggedIn(true);
+            return data;
+        } catch (error) {
+            console.error("authContext - Google login() - error:", error);
+            throw error;
+        }
+    };
+
+
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn, loading, login, signup, logout, checkAuthStatus }}>
+        <AuthContext.Provider value={{ user, setUser, isLoggedIn, loading, login, signup, logout, checkAuthStatus, loginWithGoogle }}>
             {children}
         </AuthContext.Provider>
     );

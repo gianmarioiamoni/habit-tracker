@@ -1,5 +1,7 @@
 import ReCAPTCHA from 'react-google-recaptcha';
 
+import { GoogleLogin } from '@react-oauth/google';
+
 import { useLogin } from '../../hooks/auth/useLogin';
 
 function Login(): JSX.Element {
@@ -10,7 +12,8 @@ function Login(): JSX.Element {
         setPassword,
         handleSubmit,
         showCaptcha,
-        onCaptchaVerify
+        onCaptchaVerify,
+        onGoogleLoginSuccess,
 
     } = useLogin();
     
@@ -63,10 +66,16 @@ function Login(): JSX.Element {
                 <p className="mt-4 text-center text-sm text-gray-600">
                     Don't have an account? <a href="/signup" className="text-indigo-600 hover:text-indigo-500">Sign up</a>
                 </p>
+                {/* Google login */}
+                <div className="mt-6">
+                    <GoogleLogin
+                        onSuccess={credentialResponse => onGoogleLoginSuccess(credentialResponse)}
+                        onError={() => console.log('Login Failed')}
+                    />
+                </div>
             </div>
         </div>
     );
 };
 
 export default Login;
-
