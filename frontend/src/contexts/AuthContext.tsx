@@ -24,7 +24,7 @@ interface AuthContextType {
     logout: () => void;
     checkAuthStatus: () => void;
     loading: boolean;
-    loginWithGoogle: (tokenResponse: any) => any;
+    authenticateWithGoogle: (tokenResponse: any) => any;
 }
 
 // Context creation 
@@ -104,22 +104,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
         }
     };
 
-    // Google login
-    const loginWithGoogle = async (tokenResponse: any) => {
+    const authenticateWithGoogle = async (tokenResponse: any) => {
         try {
             const data = await loginWithGoogleService(tokenResponse.credential);
             setUser({ name: data.name, email: data.email, id: data._id });
             setIsLoggedIn(true);
             return data;
         } catch (error) {
-            console.error("authContext - Google login() - error:", error);
+            console.error("authContext - Google authentication() - error:", error);
             throw error;
         }
     };
 
 
     return (
-        <AuthContext.Provider value={{ user, setUser, isLoggedIn, loading, login, signup, logout, checkAuthStatus, loginWithGoogle }}>
+        <AuthContext.Provider value={{ user, setUser, isLoggedIn, loading, login, signup, logout, checkAuthStatus, authenticateWithGoogle }}>
             {children}
         </AuthContext.Provider>
     );

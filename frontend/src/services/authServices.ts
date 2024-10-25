@@ -44,10 +44,10 @@ export const checkAuthStatus = async () => {
 };
 
 // Function to send the Google token to the backend to verify and login the user
-export const loginWithGoogleService = async (tokenId: string) => {
+export const loginWithGoogle = async (tokenId: string) => {
     try {
         // Send the Google token ID to the backend and get the user data back
-        const response = await axios.post('/api/auth/google', { tokenId });
+        const response = await axios.post(`${API_URL}/google-login`, { tokenId });
         return response.data;
     } catch (error: any) {
         console.error("loginWithGoogleService - error:", error);

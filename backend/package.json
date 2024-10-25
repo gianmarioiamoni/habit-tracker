@@ -47,6 +47,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "express-rate-limit": "^7.4.1",
+    "google-auth-library": "^9.14.2",
     "hcaptcha": "^0.2.0",
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",

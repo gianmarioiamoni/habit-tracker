@@ -23,7 +23,7 @@ export function useLogin() {
 
   const navigate = useNavigate();
 
-  const { login: loginContext, loginWithGoogle: loginWithGoogleContext, user, setUser } = useAuth();
+  const { login: loginContext, authenticateWithGoogle: loginWithGoogleContext, user } = useAuth();
 
   const { showError, showSuccess } = useToast();
 

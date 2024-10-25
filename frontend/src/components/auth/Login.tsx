@@ -71,6 +71,7 @@ function Login(): JSX.Element {
                     <GoogleLogin
                         onSuccess={credentialResponse => onGoogleLoginSuccess(credentialResponse)}
                         onError={() => console.log('Login Failed')}
+                        locale="en"
                     />
                 </div>
             </div>

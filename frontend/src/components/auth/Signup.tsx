@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-
 import validator from 'validator';
-
 import { sanitizeEmail } from '../../utils/normalize';
-
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
-
+import { GoogleLogin } from '@react-oauth/google'; // Aggiunto
 
 function Signup(): JSX.Element {
     const [name, setName] = useState('');
@@ -16,8 +13,7 @@ function Signup(): JSX.Element {
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
-
-    const { signup: signupContext } = useAuth(); 
+    const { signup: signupContext, authenticateWithGoogle } = useAuth(); // Aggiunto loginWithGoogle
     const { showSuccess, showError } = useToast();
 
     const { mutate, isLoading, error } = useMutation(signupContext, {
@@ -52,6 +48,17 @@ function Signup(): JSX.Element {
         const sanitizedName = validator.escape(name);
 
         mutate({ name: sanitizedName, email: sanitizedEmail, password });
+    };
+
+    // Funzione per gestire il successo del Google signup
+    const onGoogleSignupSuccess = async (tokenResponse: any) => {
+        try {
+            await authenticateWithGoogle(tokenResponse); 
+            showSuccess("Signup with Google was successful!");
+            navigate('/dashboard');
+        } catch (error) {
+            showError("An error occurred during Google signup");
+        }
     };
 
     return (
@@ -94,12 +101,23 @@ function Signup(): JSX.Element {
                         {isLoading ? 'Signing up...' : 'Signup'}
                     </button>
                 </form>
+
+                {/* Google signup */}
+                <div className="mt-6">
+                    <GoogleLogin
+                        onSuccess={credentialResponse => onGoogleSignupSuccess(credentialResponse)}
+                        onError={() => console.log('Signup Failed')}
+                        locale="en"
+                    />
+                </div>
+
                 <p className="mt-4 text-center text-sm text-gray-600">
                     Already have an account? <a href="/login" className="text-indigo-600 hover:text-indigo-500">Login</a>
                 </p>
             </div>
-        </div >
+        </div>
     )
 };
 
 export default Signup;
+

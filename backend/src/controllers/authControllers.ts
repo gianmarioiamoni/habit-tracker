@@ -4,12 +4,14 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import validator from "validator";
 
+
 import { encryptDataWithIV, decryptData } from "../utils/crypto";
 import { sanitizeEmail } from "../utils/normalize";
 
 import { validateCaptcha } from "../utils/captcha";
 
 import redisClient from "../redis/redis";
+import { OAuth2Client } from "google-auth-library";
 
 dotenv.config();
 
@@ -242,10 +244,66 @@ export const checkAuthStatus = async (
   }
 };
 
+// Google login
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+console.log("OAuth2Client - GOOGLE_ID_CLIENT:", process.env.GOOGLE_CLIENT_ID)
+
+export const googleLogin = async (req: Request, res: Response) => {
+  const { tokenId } = req.body;
+
+  try {
+    // Verify Google ID token
+    const ticket = await client.verifyIdToken({
+      idToken: tokenId,
+      audience: process.env.GOOGLE_CLIENT_ID, 
+    });
+
+    const payload = ticket.getPayload();
+    if (payload && 'email' in payload && 'name' in payload && 'picture' in payload) {
+      const { email, name, picture } = payload;
+
+      // Check if the user already exists
+      let user = await User.findOne({ email });
+
+      if (!user) {
+        // If the user doesn't exist, create a new one
+        user = new User({ email, name, avatar: picture });
+        await user.save();
+      }
+
+      // Generate a JWT token or manage the session      
+      const token = generateToken(user); 
+
+      res.status(200).json({
+        message: "Google login successful",
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+      });
+    } else {
+      throw new Error('Invalid Google token payload');
+    }
+
+  
+  } catch (error) {
+    console.error("Error during Google login:", error);
+    res.status(500).json({ message: "Google login failed" });
+  }
+}; 
+
+
 // @desc    Logout user
 // @route   GET /api/auth/logout
 // @access  Public
 export const logout = async (req: Request, res: Response): Promise<void> => {
+  // Clear the authToken cookie for JWT login
   res.clearCookie("authToken");
+
+  // Clear the googleToken cookie if it exists (for Google login)
+  res.clearCookie("googleToken");
+
   res.status(200).json({ message: "Logged out successfully" });
 };

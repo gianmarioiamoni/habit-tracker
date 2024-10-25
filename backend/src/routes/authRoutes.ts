@@ -1,6 +1,6 @@
 import express from "express";
 
-import { login, signup, logout, checkAuthStatus } from "../controllers/authControllers";
+import { login, signup, logout, checkAuthStatus, googleLogin } from "../controllers/authControllers";
 
 import {loginLimiter, captchaLimiter} from "../middleware/loginLimiterMiddleware";
 
@@ -13,5 +13,7 @@ router.post("/login", loginLimiter, login);
 router.post("/logout", logout);
 
 router.get("/status", checkAuthStatus);
+
+router.post("/google-login", googleLogin)
 
 export default router;
