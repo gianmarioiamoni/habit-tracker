@@ -22,14 +22,10 @@ const generateToken = (user: any): string => {
   });
 };
 
-// // Function to generate a Google JWT token
-// const generateGoogleToken = (user: any): string => {
-//   return jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
-//     expiresIn: process.env.JWT_EXPIRES_IN,
-//   });
-// };
-
-
+const googleClientId = process.env.GOOGLE_CLIENT_ID!;
+const client = new OAuth2Client(googleClientId);
+// Google login
+// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // @desc Register a new user
 // @route POST /api/auth/signup
 // @access Public
@@ -203,46 +199,84 @@ export const checkAuthStatus = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  try {
+  // Check if the user is authenticate with login/password 
+  if (req.cookies && req.cookies.authToken) {
     const token = req.cookies.authToken;
-
-    if (!token) {
-      res.status(201).json({ user: null });
-      return;
-    }
-
-    const decodedToken = jwt.verify(token, secret) as unknown;
-
-    if (
-      typeof decodedToken === "object" &&
-      decodedToken !== null &&
-      "id" in decodedToken
-    ) {
-      const decoded = decodedToken as TokenPayload;
-
-      const user = await User.findById(decoded.id).select("-password");
-
-      if (!user) {
+    try {
+      if (!token) {
         res.status(201).json({ user: null });
         return;
       }
 
-      res.json({ user });
-      return;
+      const decodedToken = jwt.verify(token, secret) as unknown;
 
-    } else {
+      if (
+        typeof decodedToken === "object" &&
+        decodedToken !== null &&
+        "id" in decodedToken
+      ) {
+        const decoded = decodedToken as TokenPayload;
+
+        const user = await User.findById(decoded.id).select("-password");
+
+        if (!user) {
+          res.status(201).json({ user: null });
+          return;
+        }
+
+        res.json({ user });
+        return;
+
+      } else {
+        res.status(201).json({ user: null });
+        return;
+      }
+    } catch (error) {
+      console.error("Error when verifying token:", error);
       res.status(201).json({ user: null });
       return;
     }
-  } catch (error) {
-    console.error("Error when verifying token:", error);
-    res.status(201).json({ user: null });
-    return;
-  }
-};
+  } else if (req.cookies && req.cookies.googleToken) { // check if the user is authenticated with Google
+    const token = req.cookies.googleToken;
+    try {
+      if (!token) {
+        res.status(201).json({ user: null });
+        return;
+      }
 
-// Google login
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+      // Google token verification
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: googleClientId,
+      });
+      const payload = ticket.getPayload();
+
+      if (payload && payload.sub) {
+        // Check if user already exists by using Google ID
+        const user = await User.findOne({ googleId: payload.sub }).select(
+          "-password"
+        );
+
+        if (!user) {
+          res.status(201).json({ user: null });
+          return;
+        }
+
+        res.json({ user });
+        return;
+      } else {
+        res.status(201).json({ user: null });
+        return;
+      }
+    } catch (error) {
+      console.error("Error when verifying token:", error);
+      res.status(201).json({ user: null });
+      return;
+
+    }
+  }
+}
+
 
 export const googleLogin = async (req: Request, res: Response) => {
   const { tokenId } = req.body;

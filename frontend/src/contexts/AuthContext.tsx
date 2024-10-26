@@ -107,6 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     const authenticateWithGoogle = async (tokenResponse: any) => {
         try {
             const data = await loginWithGoogleService(tokenResponse.credential);
+            console.log("authContext - Google authentication() - data:", data);
             setUser({ name: data.name, email: data.email, id: data._id });
             setIsLoggedIn(true);
             return data;
