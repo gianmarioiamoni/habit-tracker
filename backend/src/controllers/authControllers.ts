@@ -22,6 +22,13 @@ const generateToken = (user: any): string => {
   });
 };
 
+// // Function to generate a Google JWT token
+// const generateGoogleToken = (user: any): string => {
+//   return jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+//     expiresIn: process.env.JWT_EXPIRES_IN,
+//   });
+// };
+
 
 // @desc Register a new user
 // @route POST /api/auth/signup
@@ -45,12 +52,10 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 
   // Encrypt sensible data using the same function as in login
   const { encryptedEmail, iv } = encryptDataWithIV(sanitizedEmail);
-  console.log("Signup - Encrypted email:", encryptedEmail);
 
   try {
     // Search for the user by using the encrypted email
     const user = await User.findOne({ email: encryptedEmail });
-    console.log("Signup - User:", user);
     if (user) {
       res.status(401).json({ message: "User already exists" });
       return;
@@ -96,9 +101,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   const attempts = await redisClient.get(redisKey);
   const attemptCount = attempts ? parseInt(attempts) : 0;
 
-  console.log("Login - attemptCount:", attemptCount);
-  captchaToken && console.log("CaptchaToken:", captchaToken); 
-  //////////////////////
   // CAPTCHA
   if (!captchaToken && attemptCount == 2) {
     await redisClient.incr(redisKey);
@@ -107,7 +109,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     return;
   }
   if (captchaToken) {
-    console.log("authController - login() - validate Captcha");
     const isCaptchaValid = await validateCaptcha(captchaToken);
     if (!isCaptchaValid) {
       await redisClient.incr(redisKey);
@@ -116,7 +117,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
   }
-////////////////////////////////////
   
   // Verify email format
   if (!validator.isEmail(sanitizedEmail)) {
@@ -125,7 +125,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     await redisClient.expire(redisKey, 60 * 60); // expire after 1 hour
 
     res.status(400).json({ message: "Invalid email format" });
-    console.log("Invalid email format:", sanitizedEmail);
     return;
   }
 
@@ -165,8 +164,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     // Generate authentication token 
     const token = generateToken(user);
-
-    console.log("Generated token:", token);
 
     // Cookie settings
     res.cookie("authToken", token, {
@@ -246,7 +243,6 @@ export const checkAuthStatus = async (
 
 // Google login
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-console.log("OAuth2Client - GOOGLE_ID_CLIENT:", process.env.GOOGLE_CLIENT_ID)
 
 export const googleLogin = async (req: Request, res: Response) => {
   const { tokenId } = req.body;
@@ -259,24 +255,31 @@ export const googleLogin = async (req: Request, res: Response) => {
     });
 
     const payload = ticket.getPayload();
-    if (payload && 'email' in payload && 'name' in payload && 'picture' in payload) {
-      const { email, name, picture } = payload;
+    if (payload && 'email' in payload && 'name' in payload && 'picture' in payload && 'sub' in payload) {
+      const { email, name, picture, sub } = payload;
 
       // Check if the user already exists
       let user = await User.findOne({ email });
 
       if (!user) {
-        // If the user doesn't exist, create a new one
-        user = new User({ email, name, avatar: picture });
+        // If the user doesn't exist, create a new one, including googleId
+        user = new User({ email, name, avatar: picture, googleId: sub });
         await user.save();
       }
 
-      // Generate a JWT token or manage the session      
-      const token = generateToken(user); 
+      // Cookie settings
+      res.cookie("googleToken", tokenId, {
+        httpOnly: true,
+        secure: false, // for local development only 
+        sameSite: "lax",
+        domain: "localhost", // locahost for test
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
 
       res.status(200).json({
         message: "Google login successful",
-        token,
+        token: tokenId,
         user: {
           id: user._id,
           name: user.name,
@@ -286,7 +289,6 @@ export const googleLogin = async (req: Request, res: Response) => {
     } else {
       throw new Error('Invalid Google token payload');
     }
-
   
   } catch (error) {
     console.error("Error during Google login:", error);

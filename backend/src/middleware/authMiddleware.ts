@@ -33,10 +33,12 @@ export const protect = async (
       res.status(401).json({ message: "Not authorized, token failed" });
     }
   }
-  // Handle Google Token (OAuth flow)
+  // Verifica Google Token
   else if (req.cookies && req.cookies.googleToken) {
     try {
       token = req.cookies.googleToken;
+
+      const decodedWithoutVerification = jwt.decode(token);
 
       // Verify the Google token
       const ticket = await client.verifyIdToken({
@@ -44,30 +46,29 @@ export const protect = async (
         audience: process.env.GOOGLE_CLIENT_ID,
       });
 
+      if (!ticket) {
+        throw new Error(
+          "Google token verification failed: ticket is null or undefined."
+        );
+      }
+
       const payload = ticket.getPayload();
       if (!payload) {
-        res
-          .status(401)
-          .json({ message: "Google token verification failed" });
-        return;
+        throw new Error(
+          "Google token verification failed: payload is null or undefined."
+        );
       }
 
-      // Find or create the user in the database based on Google ID
       const user = await User.findOne({ googleId: payload.sub });
       if (!user) {
-        res
-          .status(401)
-          .json({ message: "No user found with this Google ID" });
+        res.status(401).json({ message: "No user found with this Google ID" });
         return;
       }
-
-      // Attach the user to the request object
       req.user = user;
       next();
     } catch (error) {
+      console.error("authMiddleware - Google token verification error:", error);
       res.status(401).json({ message: "Not authorized, Google token failed" });
     }
-  } else {
-    res.status(401).json({ message: "Not authorized, no token" });
   }
 };

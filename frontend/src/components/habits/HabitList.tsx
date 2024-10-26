@@ -1,5 +1,6 @@
 // import { useEffect } from "react";
 
+import { useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast} from "../../contexts/ToastContext";
 
@@ -27,8 +28,19 @@ function HabitList(): JSX.Element {
         handleDeleteHabit,
     } = useHabits();
 
-    isLoading && showInfo("Loading habits...");
-    isError && showError("Error while fetching habits.");
+    // isLoading && showInfo("Loading habits...");
+    // isError && showError("Error while fetching habits.");
+    useEffect(() => {
+        if (isLoading) {
+            showInfo("Loading habits...");
+        }
+    }, [isLoading, showInfo]);
+
+    useEffect(() => {
+        if (isError) {
+            showError("Error while fetching habits.");
+        }
+    }, [isError, showError]);
 
     return (
         <div className="container mx-auto px-24 py-4">

@@ -13,8 +13,6 @@ const algorithm = "aes-256-cbc"; // AES with a 256-bit key
 const iv = crypto.randomBytes(16); // 16 bytes IV 
 
 export const encryptData = (data: string): string => {
-    console.log("secretKey:", secretKey)
-    console.log("hashedKey:", hashedKey)
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(hashedKey), iv);
     let encrypted = cipher.update(data, "utf8", "hex");
     encrypted += cipher.final("hex");
@@ -31,9 +29,6 @@ export const decryptData = (encryptedData: string): string => {
   let decrypted = decipher.update(encrypted, "hex", "utf8");
     decrypted += decipher.final("utf8");
     
-    console.log("Hashed key:", hashedKey);    
-
-
   return decrypted;
 };
 

@@ -12,8 +12,6 @@ export const validateCaptcha = async (captchaToken: string): Promise<boolean> =>
       },
     });
 
-    console.log("validateCaptcha - response.data:", response.data);
-
     return response.data.success;
   } catch (error) {
     console.error("reCAPTCHA verification failed:", error);

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-
 import {
     login as loginService,
     signup as signupService,
@@ -38,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     const [user, setUser] = useState<UserType | null>({ id: 0, name: '', email: '' });
     const [loading, setLoading] = useState<boolean>(true);
 
+    
     useEffect(() => {
         // Call API to verify auth status 
         const verifyLogin = async () => {

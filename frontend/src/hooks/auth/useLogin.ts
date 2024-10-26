@@ -38,8 +38,10 @@ export function useLogin() {
   // Show login error and success message
   useEffect(() => {
     if (loginError) {
-      console.log("showError(loginError):", loginError);
       showError(loginError);
+
+      // Reset login error
+      setLoginError(null);
     }
   }, [loginError, showError]);
 
@@ -117,8 +119,11 @@ export function useLogin() {
     mutation.mutate();
   };
     
-  const onGoogleLoginSuccess: (tokenResponse: any) => void = (tokenResponse: any) => {
-    loginWithGoogleContext(tokenResponse);
+  // const onGoogleLoginSuccess: (tokenResponse: any) => void = (tokenResponse: any) => {
+  const onGoogleLoginSuccess: (tokenResponse: any) => void = async (tokenResponse: any) => {
+    await loginWithGoogleContext(tokenResponse);
+    setIsSuccess(true);
+    navigate("/dashboard");
   }
 
   
