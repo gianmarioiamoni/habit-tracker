@@ -9,6 +9,8 @@ import {
   deleteHabit,
 } from "../../services/habitServices";
 
+import { frequencyOptions } from "../../utils/frequencyOptions";
+
 export function useHabits() {
   const { showError, showSuccess } = useToast();
   const queryClient = useQueryClient();
@@ -17,7 +19,8 @@ export function useHabits() {
     _id: "",
     title: "",
     description: "",
-    frequency: "",
+    // frequency is the frequencyOptions value with default: true or the 1st value
+    frequency: frequencyOptions.find(option => option.default === true)?.value || frequencyOptions[0].value, 
     startDate: new Date(),
     progress: [],
   });

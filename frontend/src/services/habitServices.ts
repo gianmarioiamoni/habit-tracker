@@ -5,6 +5,7 @@ import { Habit } from "../interfaces/Habit";
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export const createHabit = async (habitData: any) => {
+  console.log()
   const response = await api.post(`${API_URL}/habits`, habitData);
   return response.data;
 };
@@ -34,5 +35,20 @@ export const getDashboardData = async (timeFilter: string) => {
     `${API_URL}/habits/dashboard?timeFilter=${timeFilter}`
   );
   return response.data;
+};
+
+export const getDailyProgressData = async (timeFilter: string): Promise<Record<string, number>> => {
+  try {
+    const response = await api.get(
+      `${API_URL}/habits/dashboard/daily-progress?timeFilter=${timeFilter}`,
+      // {
+      //   params: { timeFilter },
+      // }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching daily progress data:", error);
+    throw error;
+  }
 };
 

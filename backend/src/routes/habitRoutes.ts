@@ -8,7 +8,8 @@ import {
   updateHabit,
   deleteHabit,
   completeHabit,
-  getDashboardData
+  getDashboardData,
+  getDailyProgressData
 } from "../controllers/habitControllers";
 
 
@@ -171,6 +172,8 @@ router.delete("/:habitId", protect, deleteHabit);
 router.put("/:habitId/complete", protect, completeHabit);
 
 router.get("/dashboard", protect, getDashboardData);
+
+router.get("/dashboard/daily-progress", protect, getDailyProgressData);
 
 export default router;
 

@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import Habit from "../models/Habit";
 
 export const createHabit = async (req: Request, res: Response) => {
+  console.log("createHabit controller - req.body", req.body);
   try {
     const { title, description, frequency, startDate } = req.body;
     
     const userId = req.user?._id;
     // Assuming user is attached to request by the authMiddleware
-
+    console.log("createHabit controller - req.user", req.user);
     const newHabit = new Habit({
       title,
       description,
@@ -15,7 +16,7 @@ export const createHabit = async (req: Request, res: Response) => {
       startDate,
       userId,
     });
-      
+    console.log("createHabit controller - newHabit", newHabit);
     const savedHabit = await newHabit.save();
     res.status(201).json(savedHabit);
   } catch (error) {
@@ -128,5 +129,42 @@ export const getDashboardData = async (req: Request, res: Response) => {
   }
 };
 
+export const getDailyProgressData = async (req: Request, res: Response) => {
+  const { timeFilter } = req.query;
+  const today = new Date();
+  let startDate;
+
+  if (timeFilter === "7") {
+    startDate = new Date(today.setDate(today.getDate() - 7));
+  } else if (timeFilter === "30") {
+    startDate = new Date(today.setDate(today.getDate() - 30));
+  } else {
+    startDate = null; // or setup an appropriate starting date
+  }
+
+  try {
+    const habits = await Habit.find({
+      userId: req.user._id,
+      startDate: { $gte: startDate },
+    });
+
+    // Create an object to store the daily progress
+    const dailyProgress: Record<string, number> = {}; // an object type with keys of type string and values of type number
+
+    habits.forEach((habit) => {
+      habit.progress.forEach((progressDate) => {
+        const dateKey = progressDate.toISOString().slice(0, 10); // Use date only
+        dailyProgress[dateKey] = (dailyProgress[dateKey] || 0) + 1;
+      });
+    });
+
+    res.json(dailyProgress);
+  } catch (error) {
+    console.error(`getDailyProgressData: error: ${error}`);
+    res
+      .status(500)
+      .json({ message: "Error fetching daily progress data", error });
+  }
+};
 
 

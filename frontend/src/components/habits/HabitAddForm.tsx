@@ -16,16 +16,16 @@ export default function HabitAddForm(
 ): JSX.Element {
 
     const handleNewHabitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewHabit({ ...newHabit, [e.target.name]: e.target.value });
+        setNewHabit(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const handleFrequencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setNewHabit({ ...newHabit, frequency: e.target.value });
+        setNewHabit(prev => ({ ...prev, frequency: e.target.value }));
     };
 
     const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const isoDate = new Date(e.target.value);  // ISO format
-        setNewHabit({ ...newHabit, startDate: isoDate });
+        setNewHabit(prev => ({ ...prev, startDate: isoDate }));
     };
 
     return (
@@ -76,7 +76,6 @@ export default function HabitAddForm(
                                 </option>
                             ))}
                         </select>
-
                     </div>
                     {/* Start Date */}
                     <div className="mb-4">

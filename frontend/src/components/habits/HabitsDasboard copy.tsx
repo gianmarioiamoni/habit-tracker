@@ -1,31 +1,19 @@
-
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Bar } from 'react-chartjs-2';
 import { Chart, ChartOptions, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { getDashboardData } from '../../services/habitServices';
-import { useToast } from '../../contexts/ToastContext';
+import { useToast} from '../../contexts/ToastContext';
 import 'chart.js/auto';
-import { Line } from 'react-chartjs-2';
-
-import { getDailyProgressData } from '../../services/habitServices'; 
-
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function HabitsDashboard(): JSX.Element {
-    const [timeFilter, setTimeFilter] = useState('7'); // Default: ultimi 7 giorni
+    const [timeFilter, setTimeFilter] = useState('7'); // Default filter: Last 7 days
     const { showInfo, showError } = useToast();
-
 
     // Fetch data based on the selected time filter
     const { data, error, isLoading } = useQuery(['dashboardData', timeFilter], () => getDashboardData(timeFilter));
-
-    // Query per i dati di progresso giornaliero
-    const { data: dailyProgress, error: progressError, isLoading: isProgressLoading } = useQuery(
-        ['dailyProgress', timeFilter],
-        () => getDailyProgressData(timeFilter)
-    );
 
     const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setTimeFilter(event.target.value);
@@ -43,18 +31,6 @@ export default function HabitsDashboard(): JSX.Element {
             showError("An error occurred while fetching dashboard data: " + error);
         }
     }, [error, showError]);
-
-    useEffect(() => {
-        if (isProgressLoading) {
-            showInfo("Loading daily progress data...");
-        }
-    }, [isProgressLoading, showInfo]);
-
-    useEffect(() => {
-        if (progressError) {
-            showError("An error occurred while fetching daily progress data: " + progressError);
-        }
-    }, [progressError, showError]);
 
     // Verify if data is available and if there is the property `mostFrequentHabit`
     if (!data || !data.mostFrequentHabit) {
@@ -90,55 +66,15 @@ export default function HabitsDashboard(): JSX.Element {
         },
     };
 
-
-    // Linear chart data configuration 
-    const lineChartData = {
-        labels: dailyProgress && Array.isArray(dailyProgress) ? dailyProgress.map((item: { _id: any; }) => item._id) : [],
-        datasets: [
-            {
-                label: 'Daily Completions',
-                data: dailyProgress && Array.isArray(dailyProgress) ? dailyProgress.map((item: { count: any; }) => item.count) : [],
-                fill: false,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                tension: 0.1,
-            },
-        ],
-    };
-
-    const lineChartOptions: ChartOptions<'line'> = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top' as const,
-            },
-            title: {
-                display: true,
-                text: 'Daily Habit Progress',
-            },
-        },
-        scales: {
-            x: {
-                title: { display: true, text: 'Date' },
-            },
-            y: {
-                title: { display: true, text: 'Completions' },
-                beginAtZero: true,
-            },
-        },
-    };
-
     return (
         <div className="dashboard container mx-auto px-4 py-10">
-            {/* Time period filter */}
+            {/* Filtro per il periodo di tempo */}
             <div className="mb-8 flex justify-end">
                 <label htmlFor="timeFilter" className="mr-2 font-semibold">Filter by:</label>
                 <select
                     id="timeFilter"
                     value={timeFilter}
-                    onChange={handleFilterChange} 
+                    onChange={handleFilterChange}
                     className="border border-gray-300 rounded-lg p-2">
                     <option value="7">Last 7 days</option>
                     <option value="30">Last 30 days</option>
@@ -147,14 +83,6 @@ export default function HabitsDashboard(): JSX.Element {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Linear chart section */}
-                <div className="chart-container bg-white rounded-lg shadow-lg p-6">
-                    <h2 className="text-xl font-semibold mb-8 text-center">Daily Progress Chart</h2>
-                    <div className="relative h-64">
-                        <Line data={lineChartData} options={lineChartOptions} />
-                    </div>
-                </div>
-
                 {/* Statistics Section */}
                 <div className="statistics bg-gray-100 rounded-lg shadow-lg p-6">
                     <h1 className="text-3xl font-bold mb-8 text-center">Your Habit Dashboard</h1>
@@ -173,7 +101,7 @@ export default function HabitsDashboard(): JSX.Element {
                     </ul>
                 </div>
 
-                {/* Progress Chart Section */}
+                {/* Chart Section */}
                 <div className="chart-container bg-white rounded-lg shadow-lg p-6">
                     <h2 className="text-xl font-semibold mb-8 text-center">Habit Progress Chart</h2>
                     <div className="relative h-64">
@@ -184,3 +112,4 @@ export default function HabitsDashboard(): JSX.Element {
         </div>
     );
 }
+
