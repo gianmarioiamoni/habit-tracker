@@ -2,13 +2,11 @@ import { Request, Response } from "express";
 import Habit from "../models/Habit";
 
 export const createHabit = async (req: Request, res: Response) => {
-  console.log("createHabit controller - req.body", req.body);
   try {
     const { title, description, frequency, startDate } = req.body;
     
     const userId = req.user?._id;
     // Assuming user is attached to request by the authMiddleware
-    console.log("createHabit controller - req.user", req.user);
     const newHabit = new Habit({
       title,
       description,
@@ -16,7 +14,6 @@ export const createHabit = async (req: Request, res: Response) => {
       startDate,
       userId,
     });
-    console.log("createHabit controller - newHabit", newHabit);
     const savedHabit = await newHabit.save();
     res.status(201).json(savedHabit);
   } catch (error) {

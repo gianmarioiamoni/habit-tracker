@@ -5,7 +5,6 @@ import { Habit } from "../interfaces/Habit";
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export const createHabit = async (habitData: any) => {
-  console.log()
   const response = await api.post(`${API_URL}/habits`, habitData);
   return response.data;
 };
