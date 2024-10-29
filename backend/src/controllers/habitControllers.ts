@@ -165,3 +165,63 @@ export const getDailyProgressData = async (req: Request, res: Response) => {
 };
 
 
+export const getWeeklyOrMonthlyProgressData = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { timeFilter } = req.params; // "weekly" or "monthly"
+    const userId = req.user._id;
+
+    // Establish the aggregation format based on the selected filter  
+    const dateFormat = timeFilter === "weekly" ? "%Y-%U" : "%Y-%m"; // %U for week, %m for month
+
+    // Pipeline di aggregazione
+    const progressData = await Habit.aggregate([
+      { $match: { userId, progress: { $exists: true, $ne: [] } } }, 
+      { $unwind: "$progress" }, // Transform each data in progress in a distinct document
+      {
+        $group: {
+          _id: {
+            habitId: "$_id",
+            period: {
+              $dateToString: { format: dateFormat, date: "$progress" }, // Raggruppa per settimana o mese
+            },
+          },
+          count: { $sum: 1 }, // Count completions per period
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.period",
+          habits: {
+            $push: {
+              habitId: "$_id.habitId",
+              count: "$count",
+            },
+          },
+        },
+      },
+      { $sort: { _id: 1 } }, // Sort by period
+    ]);
+
+    // Format data to make them more readable for the frontend
+    const formattedData = progressData.map((item: any) => ({
+      period: item._id,
+      habits: item.habits.map((habit: any) => ({
+        habitId: habit.habitId,
+        count: habit.count,
+      })),
+    }));
+
+    res.json(formattedData);
+  } catch (error) {
+    console.error("Error in getting weekly or monthly progress data:", error);
+    res
+      .status(500)
+      .json({ message: "Error in getting weekly or monthly progress data" });
+  }
+};
+
+
+

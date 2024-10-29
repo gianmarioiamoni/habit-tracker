@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Bar } from 'react-chartjs-2';
@@ -8,7 +7,7 @@ import { useToast } from '../../contexts/ToastContext';
 import 'chart.js/auto';
 import { Line } from 'react-chartjs-2';
 
-import { getDailyProgressData } from '../../services/habitServices'; 
+import { getDailyProgressData, getWeeklyOrMonthlyProgressData } from '../../services/habitServices'; 
 
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -25,6 +24,12 @@ export default function HabitsDashboard(): JSX.Element {
     const { data: dailyProgress, error: progressError, isLoading: isProgressLoading } = useQuery(
         ['dailyProgress', timeFilter],
         () => getDailyProgressData(timeFilter)
+    );
+
+    // Query per i dati di progresso settimanale o mensile
+    const { data: weeklyOrMonthlyProgress, error: weeklyOrMonthlyProgressError, isLoading: isWeeklyOrMonthlyProgressLoading } = useQuery(
+        ['weeklyOrMonthlyProgress', timeFilter],
+        () => getWeeklyOrMonthlyProgressData(timeFilter)
     );
 
     const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -55,6 +60,18 @@ export default function HabitsDashboard(): JSX.Element {
             showError("An error occurred while fetching daily progress data: " + progressError);
         }
     }, [progressError, showError]);
+
+    useEffect(() => {
+        if (isWeeklyOrMonthlyProgressLoading) {
+            showInfo("Loading daily progress data...");
+        }
+    }, [isWeeklyOrMonthlyProgressLoading, showInfo]);
+
+    useEffect(() => {
+        if (weeklyOrMonthlyProgressError) {
+            showError("An error occurred while fetching daily progress data: " + weeklyOrMonthlyProgressError);
+        }
+    }, [weeklyOrMonthlyProgressError, showError]);
 
     // Verify if data is available and if there is the property `mostFrequentHabit`
     if (!data || !data.mostFrequentHabit) {
@@ -130,6 +147,32 @@ export default function HabitsDashboard(): JSX.Element {
         },
     };
 
+    // Weekly or Monthly progress chart data configuration
+    const weeklyOrMonthlyChartData = {
+        labels: weeklyOrMonthlyProgress ? weeklyOrMonthlyProgress.map((item: any) => item.period) : [],
+        datasets: weeklyOrMonthlyProgress ? weeklyOrMonthlyProgress.map((habitData: any, index: number) => ({
+            label: `Weekly/Monthly`,  
+            data: habitData.counts, /////// we suppose Counts is an array of countings per each period
+            backgroundColor: `rgba(${(index * 50) % 255}, 99, 132, 0.6)`,
+            borderColor: `rgba(${(index * 50) % 255}, 99, 132, 1)`,
+            borderWidth: 1,
+        })) : []
+    };
+
+    const weeklyOrMonthlyChartOptions: ChartOptions<'bar'> = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: true, position: 'top' },
+            title: { display: true, text: 'Weekly or Monthly Habit Completions' },
+        },
+        scales: {
+            x: { stacked: false },
+            y: { beginAtZero: true, stacked: false }
+        }
+    };
+
+
     return (
         <div className="dashboard container mx-auto px-4 py-10">
             {/* Time period filter */}
@@ -147,7 +190,7 @@ export default function HabitsDashboard(): JSX.Element {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Linear chart section */}
+                {/* Daily Chart section */}
                 <div className="chart-container bg-white rounded-lg shadow-lg p-6">
                     <h2 className="text-xl font-semibold mb-8 text-center">Daily Progress Chart</h2>
                     <div className="relative h-64">
@@ -155,7 +198,15 @@ export default function HabitsDashboard(): JSX.Element {
                     </div>
                 </div>
 
-                {/* Statistics Section */}
+                {/* Weekly or Monthly Chart section */}
+                <div className="chart-container bg-white rounded-lg shadow-lg p-6">
+                    <h2 className="text-xl font-semibold mb-8 text-center">Weekly/Monthly Progress Chart</h2>
+                    <div className="relative h-64">
+                        <Bar data={weeklyOrMonthlyChartData} options={weeklyOrMonthlyChartOptions} />
+                    </div>
+                </div>
+
+                {/* Statistics section */}
                 <div className="statistics bg-gray-100 rounded-lg shadow-lg p-6">
                     <h1 className="text-3xl font-bold mb-8 text-center">Your Habit Dashboard</h1>
                     <div className="text-lg space-y-4">
@@ -180,6 +231,8 @@ export default function HabitsDashboard(): JSX.Element {
                         <Bar data={chartData} options={chartOptions as ChartOptions<'bar'>} />
                     </div>
                 </div>
+                
+                
             </div>
         </div>
     );

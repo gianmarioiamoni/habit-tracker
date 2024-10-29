@@ -40,9 +40,6 @@ export const getDailyProgressData = async (timeFilter: string): Promise<Record<s
   try {
     const response = await api.get(
       `${API_URL}/habits/dashboard/daily-progress?timeFilter=${timeFilter}`,
-      // {
-      //   params: { timeFilter },
-      // }
     );
     return response.data;
   } catch (error) {
@@ -51,3 +48,10 @@ export const getDailyProgressData = async (timeFilter: string): Promise<Record<s
   }
 };
 
+export async function getWeeklyOrMonthlyProgressData(timeFilter: string) {
+  // Supponi che la tua API accetti un parametro timeFilter per ottenere i dati
+  const response = await api.get(
+    `${API_URL}/habits/dashboard/weekly-or-monthly-progress?timeFilter=${timeFilter}`
+  );
+  return response.data;
+}
