@@ -223,5 +223,70 @@ export const getWeeklyOrMonthlyProgressData = async (
   }
 };
 
+export const getHabitCompletionPercentages = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const userId = req.user._id;
+
+    // Aggregation pipeline to compute completion percentages
+    const completionData = await Habit.aggregate([
+      { $match: { userId, progress: { $exists: true, $ne: [] } } }, 
+      { $project: { title: 1, progressCount: { $size: "$progress" } } }, // Count comletion of each habit
+      {
+        $group: {
+          _id: null,
+          totalCompletions: { $sum: "$progressCount" }, // Sum of completions for all habits
+          habits: {
+            $push: {
+              title: "$title",
+              progressCount: "$progressCount",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          habits: {
+            $map: {
+              input: "$habits",
+              as: "habit",
+              in: {
+                title: "$$habit.title",
+                completionPercentage: {
+                  $cond: {
+                    if: { $gt: ["$totalCompletions", 0] },
+                    then: {
+                      $multiply: [
+                        {
+                          $divide: [
+                            "$$habit.progressCount",
+                            "$totalCompletions",
+                          ],
+                        },
+                        100,
+                      ],
+                    },
+                    else: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    ]);
+
+    res.json(completionData[0]?.habits || []);
+  } catch (error) {
+    console.error("Error in getting habit completion percentages:", error);
+    res
+      .status(500)
+      .json({ message: "Error in getting habit completion percentages" });
+  }
+};
+
 
 
