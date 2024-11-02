@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Signup from './components/auth/Signup';
 import Login from './components/auth/Login';
 import HabitList from './components/habits/HabitList';
-import HabitsDashbord from './components/habits/HabitsDasboard'; 
+import HabitsDashbord from './components/habits-dashboard/HabitsDasboard'; 
 import ProtectedRoute from '../src/components/auth/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/ui/Footer';
