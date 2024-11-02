@@ -8,6 +8,7 @@ import setupSwagger from "./swagger";
 
 import authRouter from "./routes/authRoutes";
 import habitRouter from "./routes/habitRoutes";
+import habitsDashboardRouter from "./routes/habitsDashboardRoutes";
 
 
 const SERVER_URL = process.env.SERVER_URL || "http://localhost:5000"; 
@@ -43,6 +44,7 @@ setupSwagger(app);
 // Routes config
 app.use("/auth", authRouter);
 app.use("/habits", habitRouter);
+app.use("/habits-dashboard", habitsDashboardRouter);
 
 
 export default app;
