@@ -6,10 +6,10 @@ import { getDashboardData } from '../../services/habitServices';
 import { useToast } from '../../contexts/ToastContext';
 import 'chart.js/auto';
 
-import DailyProgressChart from './elements/DailyProgressChart';
+import DailyProgressChart from './elements/DailyProgressChart'
 import ProgressChart from './elements/ProgressChart';
-import CompletionChart from './elements/CompletionChart';
-import WeeklyOrMonthlyProgressChart from './elements/WeeklyOrMonthlyProgressChart';
+import CompletionChart from './elements/CompletionChart'
+import WeeklyOrMonthlyProgressChart from './elements/WeeklyOrMonthlyProgressChart' 
 import StatisticsTable from './elements/StatisticsTable';
 
 
