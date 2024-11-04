@@ -61,7 +61,6 @@ export default function DailyProgressChart({ timeFilter }: DailyProgressChartPro
             },
         ],
     };
-    console.log("dailyChartData:", dailyChartData);
 
     const dailyChartOptions: ChartOptions<'line'> = {
         responsive: true,

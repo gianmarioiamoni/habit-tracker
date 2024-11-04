@@ -348,9 +348,6 @@ export const updateNotificationToken = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const { token } = req.body;
 
-  console.log("userId: ", userId);
-  console.log("token: ", token)
-
   try {
     const user = await User.findById(userId);
     if (!user) {

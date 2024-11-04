@@ -4,7 +4,7 @@ import { getMessaging, getToken, onMessage } from "firebase/messaging";
 const API_URL = "http://localhost:5000/auth";
 
 // Firebase configuration
-const firebaseConfig = {
+const firebaseCfg = {
   apiKey: "AIzaSyCDT_paM4P6QQc9Y6IWEnUsFCfxAy-mNcA",
   authDomain: "habit-tracker-1d77a.firebaseapp.com",
   projectId: "habit-tracker-1d77a",
@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 // Firebase initialization
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseCfg);
 const messaging = getMessaging(app);
 
 const VAPID_KEY = process.env.REACT_APP_FIREBASE_VAPID_KEY;
@@ -34,7 +34,6 @@ export const requestNotificationPermission = async (userId: any) => {
     });
 
     if (token) {
-      console.log("Notification token:", token);
       // Save the token in the user profile
       await fetch(`${API_URL}/${userId}/notification-token`, {
         method: "POST",
