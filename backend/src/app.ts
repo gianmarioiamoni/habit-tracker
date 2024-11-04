@@ -6,9 +6,14 @@ import cookieParser from "cookie-parser";
 
 import setupSwagger from "./swagger";
 
+import cron from "node-cron";
+
 import authRouter from "./routes/authRoutes";
 import habitRouter from "./routes/habitRoutes";
 import habitsDashboardRouter from "./routes/habitsDashboardRoutes";
+
+import User from "./models/Users";
+import { sendPushNotification } from "./utils/notifications";
 
 
 const SERVER_URL = process.env.SERVER_URL || "http://localhost:5000"; 
@@ -45,6 +50,20 @@ setupSwagger(app);
 app.use("/auth", authRouter);
 app.use("/habits", habitRouter);
 app.use("/habits-dashboard", habitsDashboardRouter);
+
+// Configure cron job to send push notifications every day at 9:00 AM
+cron.schedule("0 9 * * *", async () => {
+  console.log("Sending daily habit reminder notifications...");
+
+  const users = await User.find({ notificationToken: { $exists: true } });
+  const message = "Don't forget to complete your daily habits!";
+
+  users.forEach(user => {
+    if (user.notificationToken) {
+      sendPushNotification(message, user.notificationToken);
+    }
+  });
+});
 
 
 export default app;

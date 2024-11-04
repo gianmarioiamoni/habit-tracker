@@ -7,6 +7,8 @@ import validator from "validator";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
 
+import { requestNotificationPermission } from "../../firebaseConfig";
+
 
 export function useLogin() {
   const [email, setEmail] = useState("");
@@ -62,6 +64,7 @@ export function useLogin() {
     },
     {
       onSuccess: (data) => {
+        user && requestNotificationPermission(data._id);
         navigate("/dashboard");
         setLoginError(null);
         setIsSuccess(true);

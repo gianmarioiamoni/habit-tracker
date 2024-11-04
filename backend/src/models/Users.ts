@@ -8,13 +8,14 @@ export interface IUser extends Document {
   password?: string; // Rendilo opzionale per utenti OAuth
   googleId?: string; // Aggiungi il campo per memorizzare l'ID di Google
   iv?: string; // Può essere usato per crittografia (se necessario)
+  notificationToken?: string;
   comparePassword(enteredPassword: string): Promise<boolean>;
 }
 
 const userSchema: Schema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
@@ -30,6 +31,10 @@ const userSchema: Schema = new Schema({
     sparse: true, // Campo opzionale, ma deve essere unico se presente
   },
   iv: { type: String },
+  notificationToken: {
+    type: String,
+    required: false, // Viene aggiunto solo se l'utente autorizza le notifiche
+  },
 });
 
 // Method to confirm password
