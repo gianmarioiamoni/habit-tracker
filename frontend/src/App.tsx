@@ -7,6 +7,7 @@ import HabitsDashbord from './components/habits-dashboard/HabitsDasboard';
 import ProtectedRoute from '../src/components/auth/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/ui/Footer';
+import Homepage from './components/Homepage';
 
 
 function App(): JSX.Element {
@@ -21,6 +22,7 @@ function App(): JSX.Element {
 
             {/* Routes */}
             <Routes>
+              <Route path="/" element={<Homepage />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               {/* Protected routes */}
