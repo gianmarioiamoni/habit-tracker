@@ -1,12 +1,15 @@
 # Habit Tracker
 
-Habit Tracker is a web application designed to help users manage and track their habits. It allows users to set goals, monitor their progress, and visualize their performance over time. 
+![01  Homepage](https://github.com/user-attachments/assets/dccf0836-cfba-4ee4-884d-ce669cbab024)
+
+
+Habit Tracker is a web application designed to help users manage and improve their daily habits. Built using the MERN stack (MongoDB, Express, React, Node.js) and TypeScript, this app provides an intuitive interface for tracking habits, setting goals, and monitoring progress over time.
 
 ## Technologies
 
 ### Frontend
-- **<span style="color: #3182ce;">React</span>**: for building the user interface
 - **<span style="color: #3182ce;">TypeScript</span>**: for type-safe development on both frontend and backend
+- **<span style="color: #3182ce;">React</span>**: for building the user interface
 - **<span style="color: #3182ce;">Tailwind CSS</span>**: for styling and layout
 - **<span style="color: #3182ce;">React Query</span>**: for managing data fetching and caching
 - **<span style="color: #3182ce;">Axios</span>**: for making HTTP requests to the backend
@@ -24,8 +27,8 @@ Habit Tracker is a web application designed to help users manage and track their
 
 - **<span style="color: #805ad5;">User Authentication</span>**
 - **<span style="color: #805ad5;">Habit Creation and Tracking</span>**
-- **<span style="color: #805ad5;">Progress Visualization</span>**
-- **<span style="color: #805ad5;">Dashboard and Habit Management</span>**
+- **<span style="color: #805ad5;">Habit Editing and Deleting</span>**
+- **<span style="color: #805ad5;">Habit Dashboard and Progress Visualization</span>**
 - **<span style="color: #805ad5;">Advanced Security Solutions</span>**
 
 ## Detailed Feature Description
@@ -33,35 +36,60 @@ Habit Tracker is a web application designed to help users manage and track their
 ### User Authentication
 
 - **<span style="color: #805ad5;">Registration and Login</span>**: 
-  - Users can register and log in securely with email-based authentication.
+  - Users can register and log in securely either with email-based authentication or Google authentication.
   - Passwords are securely hashed.
   - JWT tokens are used to maintain secure sessions.
+    
+![02  Login](https://github.com/user-attachments/assets/d9ef031e-eb78-4f17-b3df-be10c8bef0a4)
+![02 a Login with google](https://github.com/user-attachments/assets/f784d3a3-5ef2-404b-8c72-e9c1724dd036)
+
+### User Dashboard
+- **<span style="color: #805ad5;">User Dashboard</span>**:
+  - The dashboard provides a comprehensive view of all habits, including completion status and upcoming goals.
+  - Users can add, edit, or delete habits directly from the dashboard.
+    
+![03  Habits list](https://github.com/user-attachments/assets/a684013f-2dbe-4dcc-8722-603603013301)
 
 ### Habit Creation and Tracking
 
 - **<span style="color: #805ad5;">Creating New Habits</span>**:
   - Users can set up new habits with specific details such as title, frequency (daily, weekly, monthly), and start date.
   - Each habit has customizable parameters to suit individual tracking needs.
+    
+  ![04  Add Habit](https://github.com/user-attachments/assets/6dc74370-0344-4fe7-af2f-590e1325b6f1)
 
 - **<span style="color: #805ad5;">Marking Habit Completion</span>**:
   - Users can mark habits as complete on specific dates, which are stored and tracked over time.
   - This data allows for ongoing progress tracking and analytics.
+    
+![05  Complete Habit](https://github.com/user-attachments/assets/6643e195-2b3c-4751-9c69-c2005bc9495b)
 
-### Progress Visualization
+  
+### Habit Editing and Deleting
+
+- **<span style="color: #805ad5;">Editing Habits</span>**:
+  - Users can edit specific details such as title, frequency (daily, weekly, monthly), and start date.
+    
+    ![06  Edit habit](https://github.com/user-attachments/assets/e05ce5fb-ed3a-4a35-8d9f-63090ae3c819)
+
+- **<span style="color: #805ad5;">Deleting Habits</span>**:
+  - Habits can be deleted by user confirmation.
+    
+![07  Delete Habit](https://github.com/user-attachments/assets/7d058250-a402-4489-8509-c7e6ba84f2fc)
+![07 a Delete Habit](https://github.com/user-attachments/assets/db3c369d-7571-4f93-b0e7-1ef1e1c157a5)
+
+
+### Habit Dashboard and Progress Visualization
 
 - **<span style="color: #805ad5;">Habit Progress Tracking</span>**:
   - Users can view graphical representations of their progress using bar charts, which show completion rates over time.
   - Customizable time periods allow users to view progress for weekly or monthly intervals.
+  - The Habit dashboard displays key metrics, including total habits, completed habits, and any overdue goals.
+  - Graphical insights help users stay motivated and on track with their habit goals
+  ![08  Habit Dashboard](https://github.com/user-attachments/assets/c387682e-03d7-4a15-a9b9-195eecf7ae7d)
 
-### Dashboard and Habit Management
-
-- **<span style="color: #805ad5;">User Dashboard</span>**:
-  - The dashboard provides a comprehensive view of all habits, including completion status and upcoming goals.
-  - Users can add, edit, or delete habits directly from the dashboard.
-
-- **<span style="color: #805ad5;">Progress Overview</span>**:
-  - The dashboard displays key metrics, including total habits, completed habits, and any overdue goals.
-  - Graphical insights help users stay motivated and on track with their habit goals.
+  ![08a  Habit dashboard details](https://github.com/user-attachments/assets/263c1c9d-b3b1-4444-b9a6-ab27553efb9f)
+  ![08b  Habit Dashboard details](https://github.com/user-attachments/assets/fa804ddb-8fb2-457c-9c03-2ef18a093905)
 
 ### Advanced Security Solutions
 
@@ -86,6 +114,11 @@ The following solutions has been adopted inside the project to enhance data secu
 5. **Rate Limiting and Brute Force Protection**
    - Limited failed login attempts to prevent brute force attacks. Used `express-rate-limit` middleware to set login attempt thresholds.
    - Implemented CAPTCHA after a certain number of failed login attempts.
+     
+   ![10  captcha](https://github.com/user-attachments/assets/f04a2c8e-60ae-49f2-b832-a57fa2f13127)
+   
+   ![11  too many attempts](https://github.com/user-attachments/assets/b10cea3b-00f7-4d64-9368-66929f4e113c)
+
 
 ## Getting Started
 
