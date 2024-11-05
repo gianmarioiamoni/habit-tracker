@@ -15,6 +15,12 @@ export default function HabitListItemProgressHistory({
 
     const toggleExpanded = () => setIsExpanded((prev) => !prev);
 
+    // Sort habit.progress array in descending order by entryDate
+    const sortedProgress = habit.progress
+        ? [...habit.progress].sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+        : [];
+    
+
     return (
         <div className="mt-4">
             <div className="flex items-center">
@@ -51,7 +57,8 @@ export default function HabitListItemProgressHistory({
             {isExpanded && (
                 <ul className="list-disc ml-4 text-gray-600 mt-2">
                     {habit.progress && habit.progress.length > 0 ? (
-                        habit.progress.map((entry, index) => (
+                        // habit.progress.map((entry, index) => (
+                        sortedProgress.map((entry, index) => (
                             <li key={index} className="text-xs ml-4 flex items-center">
                                 <span className="mr-2">{format(new Date(entry), "dd-MM-yyyy")}</span>
                                 <div className="relative group">
